@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */; };
+		D87D6C301B2F0E9A003A2A6F /* WattageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */; };
+		D87D6C331B2F0E9A003A2A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C311B2F0E9A003A2A6F /* Main.storyboard */; };
+		D87D6C351B2F0E9A003A2A6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C341B2F0E9A003A2A6F /* Images.xcassets */; };
+		D87D6C381B2F0E9A003A2A6F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C361B2F0E9A003A2A6F /* LaunchScreen.xib */; };
+		D87D6C441B2F0E9A003A2A6F /* SmartMeterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */; };
+		D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */; };
+		D87D6C521B301F12003A2A6F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C511B301F12003A2A6F /* Settings.bundle */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D87D6C3E1B2F0E9A003A2A6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D87D6C201B2F0E9A003A2A6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D87D6C271B2F0E9A003A2A6F;
+			remoteInfo = SmartMeter;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D87D6C2C1B2F0E9A003A2A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WattageViewController.swift; sourceTree = "<group>"; };
+		D87D6C321B2F0E9A003A2A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D87D6C341B2F0E9A003A2A6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D87D6C371B2F0E9A003A2A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartMeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D87D6C421B2F0E9A003A2A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartMeterTests.swift; sourceTree = "<group>"; };
+		D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerMeter.swift; sourceTree = "<group>"; };
+		D87D6C511B301F12003A2A6F /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D87D6C251B2F0E9A003A2A6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D87D6C3A1B2F0E9A003A2A6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D87D6C1F1B2F0E9A003A2A6F = {
+			isa = PBXGroup;
+			children = (
+				D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */,
+				D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */,
+				D87D6C291B2F0E9A003A2A6F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D87D6C291B2F0E9A003A2A6F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */,
+				D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */ = {
+			isa = PBXGroup;
+			children = (
+				D87D6C511B301F12003A2A6F /* Settings.bundle */,
+				D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */,
+				D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */,
+				D87D6C311B2F0E9A003A2A6F /* Main.storyboard */,
+				D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */,
+				D87D6C341B2F0E9A003A2A6F /* Images.xcassets */,
+				D87D6C361B2F0E9A003A2A6F /* LaunchScreen.xib */,
+				D87D6C2B1B2F0E9A003A2A6F /* Supporting Files */,
+			);
+			path = SmartMeter;
+			sourceTree = "<group>";
+		};
+		D87D6C2B1B2F0E9A003A2A6F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D87D6C2C1B2F0E9A003A2A6F /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */ = {
+			isa = PBXGroup;
+			children = (
+				D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */,
+				D87D6C411B2F0E9A003A2A6F /* Supporting Files */,
+			);
+			path = SmartMeterTests;
+			sourceTree = "<group>";
+		};
+		D87D6C411B2F0E9A003A2A6F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D87D6C421B2F0E9A003A2A6F /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D87D6C271B2F0E9A003A2A6F /* SmartMeter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D87D6C471B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeter" */;
+			buildPhases = (
+				D87D6C241B2F0E9A003A2A6F /* Sources */,
+				D87D6C251B2F0E9A003A2A6F /* Frameworks */,
+				D87D6C261B2F0E9A003A2A6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmartMeter;
+			productName = SmartMeter;
+			productReference = D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D87D6C3C1B2F0E9A003A2A6F /* SmartMeterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D87D6C4A1B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeterTests" */;
+			buildPhases = (
+				D87D6C391B2F0E9A003A2A6F /* Sources */,
+				D87D6C3A1B2F0E9A003A2A6F /* Frameworks */,
+				D87D6C3B1B2F0E9A003A2A6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D87D6C3F1B2F0E9A003A2A6F /* PBXTargetDependency */,
+			);
+			name = SmartMeterTests;
+			productName = SmartMeterTests;
+			productReference = D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D87D6C201B2F0E9A003A2A6F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Remus Lazar";
+				TargetAttributes = {
+					D87D6C271B2F0E9A003A2A6F = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					D87D6C3C1B2F0E9A003A2A6F = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = D87D6C271B2F0E9A003A2A6F;
+					};
+				};
+			};
+			buildConfigurationList = D87D6C231B2F0E9A003A2A6F /* Build configuration list for PBXProject "SmartMeter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D87D6C1F1B2F0E9A003A2A6F;
+			productRefGroup = D87D6C291B2F0E9A003A2A6F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D87D6C271B2F0E9A003A2A6F /* SmartMeter */,
+				D87D6C3C1B2F0E9A003A2A6F /* SmartMeterTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D87D6C261B2F0E9A003A2A6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D87D6C521B301F12003A2A6F /* Settings.bundle in Resources */,
+				D87D6C331B2F0E9A003A2A6F /* Main.storyboard in Resources */,
+				D87D6C381B2F0E9A003A2A6F /* LaunchScreen.xib in Resources */,
+				D87D6C351B2F0E9A003A2A6F /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D87D6C3B1B2F0E9A003A2A6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D87D6C241B2F0E9A003A2A6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D87D6C301B2F0E9A003A2A6F /* WattageViewController.swift in Sources */,
+				D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */,
+				D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D87D6C391B2F0E9A003A2A6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D87D6C441B2F0E9A003A2A6F /* SmartMeterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D87D6C3F1B2F0E9A003A2A6F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D87D6C271B2F0E9A003A2A6F /* SmartMeter */;
+			targetProxy = D87D6C3E1B2F0E9A003A2A6F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D87D6C311B2F0E9A003A2A6F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D87D6C321B2F0E9A003A2A6F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D87D6C361B2F0E9A003A2A6F /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D87D6C371B2F0E9A003A2A6F /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D87D6C451B2F0E9A003A2A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D87D6C461B2F0E9A003A2A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D87D6C481B2F0E9A003A2A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = SmartMeter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D87D6C491B2F0E9A003A2A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = SmartMeter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		D87D6C4B1B2F0E9A003A2A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SmartMeterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMeter.app/SmartMeter";
+			};
+			name = Debug;
+		};
+		D87D6C4C1B2F0E9A003A2A6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SmartMeterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMeter.app/SmartMeter";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D87D6C231B2F0E9A003A2A6F /* Build configuration list for PBXProject "SmartMeter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D87D6C451B2F0E9A003A2A6F /* Debug */,
+				D87D6C461B2F0E9A003A2A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D87D6C471B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D87D6C481B2F0E9A003A2A6F /* Debug */,
+				D87D6C491B2F0E9A003A2A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D87D6C4A1B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D87D6C4B1B2F0E9A003A2A6F /* Debug */,
+				D87D6C4C1B2F0E9A003A2A6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D87D6C201B2F0E9A003A2A6F /* Project object */;
+}

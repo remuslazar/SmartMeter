@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>
+    		Antwort des ComModuls auf getPowerProfile-Requests
+    	</xs:documentation>
+	</xs:annotation>
+	<xs:element name="values" type="t_values"/>
+	<xs:complexType name="t_values">
+		<xs:sequence>
+			<xs:element name="header" type="t_header"/>
+			<xs:choice>
+				<xs:element name="v" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="error" type="t_error" minOccurs="0"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_header">
+		<xs:sequence>
+			<xs:element name="name">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Wirkleistung"/>
+						<xs:enumeration value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="obis">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1-1:16.7.0"/>
+						<xs:enumeration value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="startts">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]{12}[nws]?"/>
+						<xs:pattern value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="endts">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]{12}[nws]?"/>
+						<xs:pattern value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="samplerate">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[1-9]{1}[0-9]*"/>
+						<xs:pattern value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="no">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]+"/>
+						<xs:pattern value="ERR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="error" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_error">
+		<xs:sequence>
+			<xs:element name="id">
+				<xs:simpleType>
+					<xs:restriction base="xs:nonNegativeInteger">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="9999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="text" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
