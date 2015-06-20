@@ -15,35 +15,39 @@ class PowerMeterInfoTableViewController: UITableViewController {
     @IBOutlet weak var hostnameLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var modelNumberLabel: UILabel!
-    @IBOutlet weak var SerialNumberLabel: UILabel!
+    @IBOutlet weak var serialNumberLabel: UILabel!
+
+    @IBAction func refresh(sender: AnyObject) { updateDeviceInfo() }
     
     // MARK: - public API
     
     var powerMeter: PowerMeter?
-    
-    private func updateUI() {
-        self.hostnameLabel.text = self.powerMeter?.host
-        self.nameLabel.text = deviceInfo["friendlyName"]
-        self.modelNumberLabel.text = deviceInfo["modelNumber"]
-        self.SerialNumberLabel.text = deviceInfo["serialNumber"]
-    }
-    
-    var deviceInfo = [String: String]() {
-        didSet {
-            updateUI()
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // we will crash now if powerMeter wasnt set accordingly, which is fine
-        //powerMeter = PowerMeter(host: "192.168.37.20")
+    var deviceInfo: [String: String]? { didSet { updateUI() } }
 
+    private func updateUI() {
+        hostnameLabel.text = self.powerMeter?.host
+        nameLabel.text = deviceInfo?["friendlyName"] ?? "-"
+        modelNumberLabel.text = deviceInfo?["modelNumber"] ?? "-"
+        serialNumberLabel.text = deviceInfo?["serialNumber"] ?? "-"
+        tableView.reloadData()
+    }
+    
+    private func updateDeviceInfo() {
+        deviceInfo = nil // invalidate old staled data
         powerMeter?.readDeviceInfo {
             if let info = $0 {
-                self.deviceInfo = info
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.refreshControl?.endRefreshing()
+                    self.deviceInfo = info
+                }
             }
         }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        refreshControl?.beginRefreshing()
+        updateDeviceInfo()
     }
 
 }

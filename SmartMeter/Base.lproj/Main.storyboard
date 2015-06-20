@@ -149,16 +149,22 @@
                             <outlet property="delegate" destination="2dF-b9-59w" id="1xO-aa-f7u"/>
                         </connections>
                     </tableView>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="oie-ea-Jmh">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="refresh:" destination="2dF-b9-59w" eventType="valueChanged" id="tIm-xH-XmM"/>
+                        </connections>
+                    </refreshControl>
                     <connections>
-                        <outlet property="SerialNumberLabel" destination="xhv-fP-JX5" id="mxn-A6-sbv"/>
                         <outlet property="hostnameLabel" destination="Dxl-hG-jjK" id="ZUn-T5-86E"/>
-                        <outlet property="modelNumberLabel" destination="qnu-fY-I9a" id="K84-XY-aOP"/>
+                        <outlet property="modelNumberLabel" destination="qnu-fY-I9a" id="ezn-09-Cwc"/>
                         <outlet property="nameLabel" destination="Jcv-an-xNb" id="vUY-Uj-rN9"/>
+                        <outlet property="serialNumberLabel" destination="xhv-fP-JX5" id="vkE-bg-Paj"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Mu-Fk-wTV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2775" y="1102"/>
+            <point key="canvasLocation" x="2714" y="1064"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="4YQ-sF-wLp">
