@@ -19,20 +19,18 @@ private struct Storyboard {
 
 class WattageViewController: UIViewController, PowerMeterDelegate {
 
+    // MARK: - Outlets
     @IBOutlet weak var wattageLabel: UILabel!
     
-    var powerMeter: PowerMeter?
-    var smartMeterHostname: String? {
+    // MARK: - Private data and methods
+    private var powerMeter: PowerMeter?
+    private var smartMeterHostname: String? {
         didSet {
             if smartMeterHostname != oldValue && smartMeterHostname != nil {
                 powerMeter = PowerMeter(host: smartMeterHostname!)
                 powerMeter?.delegate = self
             }
         }
-    }
-    
-    func didUpdateWattage(currentWattage: Int) {
-        self.wattageLabel.text = "\(currentWattage) W"
     }
     
     func readUserDefaults() {
@@ -45,6 +43,12 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         }
     }
     
+    // MARK: - PowerMeterDelegate
+    func didUpdateWattage(currentWattage: Int) {
+        self.wattageLabel.text = "\(currentWattage) W"
+    }
+
+    // MARK: - ViewController Lifetime
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -58,7 +62,6 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        println("viewWillDisappear() called")
         powerMeter?.stopUpdatingCurrentWattage()
     }
     
@@ -71,10 +74,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             object: nil)
     }
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
     
+    // MARK: - Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Storyboard.ShowDeviceInfoSegueIdentifier {
             if let dvc = segue.destinationViewController as? PowerMeterInfoTableViewController {
@@ -82,7 +83,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             }
         }
     }
-    
+
+    // MARK: - deinit
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
 }
 

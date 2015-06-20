@@ -9,6 +9,7 @@
 import Foundation
 
 protocol PowerMeterDelegate {
+    // will be called on the main queue
     func didUpdateWattage(currentWattage: Int)
 }
 
@@ -117,6 +118,7 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 
 
 class PowerProfile : PowerMeterXMLData {
+
     var v = [Int]()
     var startts: String?
 
@@ -199,5 +201,4 @@ class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
     func parser(parser: NSXMLParser, foundCharacters string: String?) {
         input += string!
     }
-    
 }
