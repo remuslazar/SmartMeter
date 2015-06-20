@@ -14,12 +14,26 @@ protocol PowerMeterDelegate {
 
 class PowerMeter: NSObject {
     
-    private let host: String!
-    var delegate: PowerMeterDelegate?
+    // MARK: - public API
     
+    var delegate: PowerMeterDelegate?
+    var autoUpdateTimeInterval = NSTimeInterval(3) {
+        didSet {
+            if timer != nil { // update the current timer
+                setupTimer()
+            }
+        }
+    }
+    
+    private func setupTimer() {
+        timer?.invalidate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: Selector("update"),
+            userInfo: nil, repeats: true)
+    }
+    
+    private let host: String!
     private var lastRequestStillPending = false
-
-    var timer: NSTimer?
+    private var timer: NSTimer?
     
     init(host: String) {
         self.host = host
@@ -58,13 +72,12 @@ class PowerMeter: NSObject {
     
     func stopUpdatingCurrentWattage() {
         timer?.invalidate()
+        timer = nil
     }
     
-    func startUpdatingCurrentWattage(interval: NSTimeInterval) {
+    func startUpdatingCurrentWattage() {
         update()
-        timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: Selector("update"),
-            userInfo: nil, repeats: true)
+        setupTimer()
     }
     
 }

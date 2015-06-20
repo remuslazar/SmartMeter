@@ -18,28 +18,38 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     @IBOutlet weak var wattageLabel: UILabel!
     
     var powerMeter: PowerMeter?
+    var smartMeterHostname: String? {
+        didSet {
+            if smartMeterHostname != oldValue && smartMeterHostname != nil {
+                powerMeter = PowerMeter(host: smartMeterHostname!)
+                powerMeter?.delegate = self
+            }
+        }
+    }
     
     func didUpdateWattage(currentWattage: Int) {
         self.wattageLabel.text = "\(currentWattage) W"
     }
     
-    func readUserDefaultsAndInitialize() {
+    func readUserDefaults() {
         println("(re)reading user defaults and init")
         if let hostname = NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) as? String {
-            powerMeter = PowerMeter(host: hostname)
-            powerMeter?.delegate = self
-            
-            let interval = NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) as? Double ?? 2.0
-            powerMeter?.startUpdatingCurrentWattage(NSTimeInterval(interval))
+            smartMeterHostname = hostname
+        }
+        if let updateInterval = NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) as? Double {
+            powerMeter?.autoUpdateTimeInterval = NSTimeInterval(updateInterval)
         }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+
         // popup the settings bundle if the settings are void
         if NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) == nil {
             UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
         }
+        
+        powerMeter?.startUpdatingCurrentWattage()
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -50,9 +60,9 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        readUserDefaultsAndInitialize()
+        readUserDefaults()
         // listen for changes in the app settings and handle it
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaultsAndInitialize"),
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaults"),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
     }
