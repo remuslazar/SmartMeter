@@ -18,16 +18,18 @@ class WattageViewController: UIViewController {
     @IBOutlet weak var wattageLabel: UILabel!
     
     var powerMeter: PowerMeter?
+    var lastRequestStillPending = false
     
     var timer: NSTimer?
     
     func update() {
+        if lastRequestStillPending { return }
+        lastRequestStillPending = true
         powerMeter?.readCurrentWattage {
+            self.lastRequestStillPending = false
             if let value = $0 {
-                dispatch_async(dispatch_get_main_queue()) {
-                    println("update: \(value) W")
-                    self.wattageLabel.text = "\(value) W"
-                }
+                println("update: \(value) W")
+                self.wattageLabel.text = "\(value) W"
             }
         }
     }

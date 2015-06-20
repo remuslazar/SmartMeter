@@ -12,6 +12,8 @@ class PowerMeter {
     
     private let host: String!
     
+    // read the current wattage from the power meter asynchronously
+    // will call the callback in the main queue
     func readCurrentWattage(completionHandler: (Int?) -> Void) {
         if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html") {
             if let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) {
