@@ -49,7 +49,7 @@ class PowerMeter: NSObject {
                     NSURLQueryItem(name: "n", value: "1")
                 ]
                 PowerProfile.parse(u.URL!) {
-                    if let powerProfile = $0 {
+                    if let powerProfile = $0 as? PowerProfile{
                         //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
                         completionHandler(powerProfile.v.last)
                     }
@@ -82,23 +82,54 @@ class PowerMeter: NSObject {
     
 }
 
-class PowerProfile : NSObject, Printable, NSXMLParserDelegate {
+//class PowerMeterDeviceInfo : NSObject, Printable, NSXMLParserDelegate {
+//    
+//}
+
+class PowerProfile : PowerMeterXMLData {
     var v = [Int]()
     var startts: String?
+
+    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+        PowerProfile(url: url, completionHandler: completionHandler).parse()
+    }
     
-    typealias PowerProfileCompletionHandler = (PowerProfile?) -> Void
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
+        attributes attributeDict: [NSObject : AnyObject]) {
+            switch elementName {
+            case "header": inHeader = true
+            default: break
+            }
+            input = ""
+    }
     
-    private let url: NSURL
-    private let completionHandler: PowerProfileCompletionHandler
+    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        switch elementName {
+        case "header": inHeader = false
+        case "v":
+            if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
+                v.append(value)
+            }
+        case "startts":
+            if inHeader {
+                startts = input
+            }
+        default: break
+        }
+    }
+}
+
+class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
     
-    init(url: NSURL, completionHandler: PowerProfileCompletionHandler) {
+    typealias PowerMeterXMLDataCompletionHandler = (PowerMeterXMLData?) -> Void
+    private let completionHandler: PowerMeterXMLDataCompletionHandler
+
+    init(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
         self.url = url
         self.completionHandler = completionHandler
     }
     
-    class func parse(url: NSURL, completionHandler: PowerProfileCompletionHandler) {
-        PowerProfile(url: url, completionHandler: completionHandler).parse()
-    }
+    private let url: NSURL
     
     private func parse() {
         let qos = Int(QOS_CLASS_USER_INITIATED.value)
@@ -137,30 +168,6 @@ class PowerProfile : NSObject, Printable, NSXMLParserDelegate {
     
     func parser(parser: NSXMLParser, foundCharacters string: String?) {
         input += string!
-    }
-
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
-        attributes attributeDict: [NSObject : AnyObject]) {
-            switch elementName {
-            case "header": inHeader = true
-            default: break
-            }
-            input = ""
-    }
-    
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        switch elementName {
-        case "header": inHeader = false
-        case "v":
-            if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
-                v.append(value)
-            }
-        case "startts":
-            if inHeader {
-                startts = input
-            }
-        default: break
-        }
     }
     
 }
