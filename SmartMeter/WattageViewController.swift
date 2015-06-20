@@ -13,75 +13,48 @@ struct UserDefaults {
     static let SmartmeterRefreshRate = "smartmeter_refresh_rate"
 }
 
-class WattageViewController: UIViewController {
+class WattageViewController: UIViewController, PowerMeterDelegate {
 
     @IBOutlet weak var wattageLabel: UILabel!
     
     var powerMeter: PowerMeter?
-    var lastRequestStillPending = false
     
-    var timer: NSTimer?
-    
-    func update() {
-        if lastRequestStillPending { return }
-        lastRequestStillPending = true
-        powerMeter?.readCurrentWattage {
-            self.lastRequestStillPending = false
-            if let value = $0 {
-                println("update: \(value) W")
-                self.wattageLabel.text = "\(value) W"
-            }
-        }
+    func didUpdateWattage(currentWattage: Int) {
+        self.wattageLabel.text = "\(currentWattage) W"
     }
     
-    func readUserDefaults() {
-        println("readUserDefaults() called")
+    func readUserDefaultsAndInitialize() {
+        println("(re)reading user defaults and init")
         if let hostname = NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) as? String {
             powerMeter = PowerMeter(host: hostname)
-            if NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) == nil {
-                NSUserDefaults().setValue(2.0, forKey: UserDefaults.SmartmeterRefreshRate)
-                NSUserDefaults().synchronize()
-            }
-            setupTimer()
-        }
-    }
-    
-    private func setupTimer() {
-        timer?.invalidate()
-        if let refreshRate = NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) as? Double {
-            timer = NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(refreshRate), target: self, selector: Selector("update"),
-                userInfo: nil, repeats: true)
+            powerMeter?.delegate = self
+            
+            let interval = NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) as? Double ?? 2.0
+            powerMeter?.startUpdatingCurrentWattage(NSTimeInterval(interval))
         }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        // popup the settings bundle if the settings are void
         if NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) == nil {
             UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
         }
-        setupTimer()
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         println("viewWillDisappear() called")
-        super.viewDidDisappear(animated)
-        timer?.invalidate()
-        timer = nil
+        powerMeter?.stopUpdatingCurrentWattage()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaults"),
+        readUserDefaultsAndInitialize()
+        // listen for changes in the app settings and handle it
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaultsAndInitialize"),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
-        readUserDefaults()
-        update()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     deinit {
