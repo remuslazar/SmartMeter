@@ -31,7 +31,7 @@ class PowerMeter: NSObject {
             userInfo: nil, repeats: true)
     }
     
-    private let host: String!
+    let host: String!
     private var lastRequestStillPending = false
     private var timer: NSTimer?
     
@@ -59,6 +59,20 @@ class PowerMeter: NSObject {
         completionHandler(nil)
     }
     
+    // read the device info from the power meter asynchronously
+    // will call the callback in the main queue
+    func readDeviceInfo(completionHandler: ([String: String]?) -> Void) {
+        if let url = NSURL(scheme: "http", host: host, path: "/wikidesc.xml") {
+            PowerMeterDeviceInfo.parse(url) {
+                if let deviceInfo = $0 as? PowerMeterDeviceInfo {
+                    //println("readDeviceInfo: \(deviceInfo)")
+                    completionHandler(deviceInfo.info)
+                }
+            }
+        }
+        completionHandler(nil)
+    }
+
     func update() {
         if delegate == nil || lastRequestStillPending { return }
         lastRequestStillPending = true
@@ -82,9 +96,25 @@ class PowerMeter: NSObject {
     
 }
 
-//class PowerMeterDeviceInfo : NSObject, Printable, NSXMLParserDelegate {
-//    
-//}
+class PowerMeterDeviceInfo : PowerMeterXMLData {
+
+    var info = [String: String]()
+    
+    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+        PowerMeterDeviceInfo(url: url, completionHandler: completionHandler).parse()
+    }
+    
+    // to simplify things, just take all xml elements and put them in a flat list
+    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
+        attributes attributeDict: [NSObject : AnyObject]) {
+            input = ""
+    }
+    
+    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        info[elementName] = input
+    }
+}
+
 
 class PowerProfile : PowerMeterXMLData {
     var v = [Int]()

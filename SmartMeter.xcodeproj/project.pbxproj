@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D81E05AC1B35804F0084D283 /* PowerMeterInfoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81E05AB1B35804F0084D283 /* PowerMeterInfoTableViewController.swift */; };
 		D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */; };
 		D87D6C301B2F0E9A003A2A6F /* WattageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */; };
 		D87D6C331B2F0E9A003A2A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C311B2F0E9A003A2A6F /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D81E05AB1B35804F0084D283 /* PowerMeterInfoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerMeterInfoTableViewController.swift; sourceTree = "<group>"; };
 		D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87D6C2C1B2F0E9A003A2A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */,
 				D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */,
 				D87D6C311B2F0E9A003A2A6F /* Main.storyboard */,
+				D81E05AB1B35804F0084D283 /* PowerMeterInfoTableViewController.swift */,
 				D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */,
 				D87D6C341B2F0E9A003A2A6F /* Images.xcassets */,
 				D87D6C361B2F0E9A003A2A6F /* LaunchScreen.xib */,
@@ -222,6 +225,7 @@
 				D87D6C301B2F0E9A003A2A6F /* WattageViewController.swift in Sources */,
 				D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */,
 				D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */,
+				D81E05AC1B35804F0084D283 /* PowerMeterInfoTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

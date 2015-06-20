@@ -13,6 +13,10 @@ struct UserDefaults {
     static let SmartmeterRefreshRate = "smartmeter_refresh_rate"
 }
 
+private struct Storyboard {
+    static let ShowDeviceInfoSegueIdentifier = "ShowDeviceInfo"
+}
+
 class WattageViewController: UIViewController, PowerMeterDelegate {
 
     @IBOutlet weak var wattageLabel: UILabel!
@@ -70,5 +74,15 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == Storyboard.ShowDeviceInfoSegueIdentifier {
+            if let dvc = segue.destinationViewController as? PowerMeterInfoTableViewController {
+                dvc.powerMeter = self.powerMeter
+            }
+        }
+    }
+    
+    
 }
 
