@@ -15,6 +15,7 @@ struct UserDefaults {
 
 private struct Storyboard {
     static let ShowDeviceInfoSegueIdentifier = "ShowDeviceInfo"
+    static let ShowHistorySegueIdentifier = "ShowHistory"
 }
 
 class WattageViewController: UIViewController, PowerMeterDelegate {
@@ -76,10 +77,19 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
    
     // MARK: - Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Storyboard.ShowDeviceInfoSegueIdentifier {
+        switch (segue.identifier!) {
+
+        case Storyboard.ShowDeviceInfoSegueIdentifier:
             if let powerMeterInfoTCC = segue.destinationViewController as? PowerMeterInfoTableViewController {
                 powerMeterInfoTCC.powerMeter = self.powerMeter
             }
+
+        case Storyboard.ShowHistorySegueIdentifier:
+            if let historyTVC = segue.destinationViewController as? PowermeterHistoryTableViewController {
+                historyTVC.history = powerMeter?.history
+            }
+            
+        default: break
         }
     }
 

@@ -24,24 +24,50 @@ class PowerMeter: NSObject {
         self.host = host
     }
     
+    var numberOfSamplesNeeded: Double? {
+        if timeSkew != nil {
+            if let lastRequestDate = lastTimestamp?.dateByAddingTimeInterval(-timeSkew!) {
+                return -lastRequestDate.timeIntervalSinceNow
+            }
+        }
+        return nil
+    }
+    
+    var history = History()
+    
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
     func readCurrentWattage(completionHandler: (Int?) -> Void) {
-        if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html") {
-            if let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) {
-                u.queryItems = [
-                    NSURLQueryItem(name: "ts", value: "0"),
-                    NSURLQueryItem(name: "n", value: "1")
-                ]
-                PowerProfile.parse(u.URL!) {
-                    if let powerProfile = $0 as? PowerProfile{
-                        //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
-                        completionHandler(powerProfile.v.last)
+        if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html"),
+            let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
+        {
+            
+            var n = "1" // default
+            if let double = numberOfSamplesNeeded {
+                let number = NSNumber(double: double+3)
+                n = "\(number.integerValue)"
+            }
+            
+            u.queryItems = [
+                NSURLQueryItem(name: "ts", value: "0"),
+                NSURLQueryItem(name: "n", value: n)
+            ]
+            let requestBeginTimestamp = NSDate()
+            PowerProfile.parse(u.URL!) {
+                if let powerProfile = $0 as? PowerProfile{
+                    //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
+                    if let ts = powerProfile.endts {
+                        self.history.add(powerProfile)
+                        self.lastTimestamp = ts
+                        self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp)
+//                        println("lastTS: \(self.lastTimestamp), startts: \(powerProfile.startts), endts: \(powerProfile.endts)")
                     }
+                    completionHandler(powerProfile.v.last)
                 }
             }
+        } else {
+            completionHandler(nil)
         }
-        completionHandler(nil)
     }
     
     // read the device info from the power meter asynchronously
@@ -54,8 +80,9 @@ class PowerMeter: NSObject {
                     completionHandler(deviceInfo.info)
                 }
             }
+        } else {
+            completionHandler(nil)
         }
-        completionHandler(nil)
     }
 
     func startUpdatingCurrentWattage() {
@@ -85,8 +112,12 @@ class PowerMeter: NSObject {
         timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: Selector("update"),
             userInfo: nil, repeats: true)
     }
-    private var lastRequestStillPending = false
     
+    private var lastRequestStillPending = false
+    private var lastTimestamp: NSDate?
+
+    // time skew of the power meter device (negative means that the device RTC is late)
+    private var timeSkew: NSTimeInterval?
 
     func update() {
         if delegate == nil || lastRequestStillPending { return }
@@ -97,6 +128,57 @@ class PowerMeter: NSObject {
                 self.delegate?.didUpdateWattage(value)
             }
         }
+    }
+    
+    
+    class History {
+
+        struct PowerSample {
+            let timestamp: NSDate
+            let value: Int?
+        }
+
+        private var data = [Int?]()
+        private var startts: NSDate?
+        let sampleRate = 1.0 // in seconds
+        
+        var endts: NSDate? {
+            return startts?.dateByAddingTimeInterval(Double(data.count))
+        }
+        
+        var count: Int {
+            return data.count
+        }
+        
+        func getSample(index: Int) -> PowerSample? {
+            if index < data.count {
+                return PowerSample(
+                    timestamp: startts!.dateByAddingTimeInterval(Double(index) * sampleRate),
+                    value: data[index]
+                )
+            }
+            return nil
+        }
+        
+        func add(powerProfile: PowerProfile) {
+            if startts == nil {
+                startts = powerProfile.startts
+                data = powerProfile.v.map { $0 }
+            } else {
+                let offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
+                if (offset > 0) {
+                    // we are missing offset values, fill them with nil values
+                    for _ in 1...Int(offset) { data.append(nil) }
+                } else {
+                    let skip = Int(-offset)
+                    if (skip < powerProfile.v.count) {
+                        for index in skip..<powerProfile.v.count { data.append(powerProfile.v[index]) }
+                    }
+                }
+            }
+            //println("\(data)")
+        }
+        
     }
     
 }
@@ -124,7 +206,7 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 class PowerProfile : PowerMeterXMLData {
 
     var v = [Int]()
-    var startts: String?
+    var startts, endts: NSDate?
 
     class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
         PowerProfile(url: url, completionHandler: completionHandler).parse()
@@ -146,13 +228,18 @@ class PowerProfile : PowerMeterXMLData {
             if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
                 v.append(value)
             }
-        case "startts":
-            if inHeader {
-                startts = input
-            }
+        case "startts": if inHeader { startts = powerMeterDateFormatter.dateFromString(input) }
+        case "endts": if inHeader { endts = powerMeterDateFormatter.dateFromString(input) }
         default: break
         }
     }
+    
+    let powerMeterDateFormatter: NSDateFormatter = {
+        var formatter = NSDateFormatter()
+        formatter.dateFormat = "yyMMddHHmmss's'"
+        return formatter
+    }()
+
 }
 
 class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
@@ -170,7 +257,8 @@ class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
     private func parse() {
         let qos = Int(QOS_CLASS_USER_INITIATED.value)
         dispatch_async(dispatch_get_global_queue(qos, 0)) {
-            if let parser = NSXMLParser(contentsOfURL: self.url) {
+            if let data = NSData(contentsOfURL: self.url) {
+                let parser = NSXMLParser(data: data)
                 parser.delegate = self
                 parser.shouldProcessNamespaces = false
                 parser.shouldReportNamespacePrefixes = false

@@ -16,6 +16,7 @@
 		D87D6C441B2F0E9A003A2A6F /* SmartMeterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */; };
 		D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */; };
 		D87D6C521B301F12003A2A6F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C511B301F12003A2A6F /* Settings.bundle */; };
+		D88AE4C61B35F1F400D8202B /* PowermeterHistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartMeterTests.swift; sourceTree = "<group>"; };
 		D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerMeter.swift; sourceTree = "<group>"; };
 		D87D6C511B301F12003A2A6F /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
+		D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowermeterHistoryTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 				D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */,
 				D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */,
 				D87D6C311B2F0E9A003A2A6F /* Main.storyboard */,
+				D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */,
 				D81E05AB1B35804F0084D283 /* PowerMeterInfoTableViewController.swift */,
 				D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */,
 				D87D6C341B2F0E9A003A2A6F /* Images.xcassets */,
@@ -223,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D87D6C301B2F0E9A003A2A6F /* WattageViewController.swift in Sources */,
+				D88AE4C61B35F1F400D8202B /* PowermeterHistoryTableViewController.swift in Sources */,
 				D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */,
 				D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */,
 				D81E05AC1B35804F0084D283 /* PowerMeterInfoTableViewController.swift in Sources */,
