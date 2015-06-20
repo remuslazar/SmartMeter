@@ -18,24 +18,8 @@ class PowerMeter: NSObject {
     // MARK: - public API
     
     var delegate: PowerMeterDelegate?
-    var autoUpdateTimeInterval = NSTimeInterval(3) {
-        didSet {
-            if timer != nil { // update the current timer
-                setupTimer()
-            }
-        }
-    }
-    
-    private func setupTimer() {
-        timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: Selector("update"),
-            userInfo: nil, repeats: true)
-    }
-    
+
     let host: String!
-    private var lastRequestStillPending = false
-    private var timer: NSTimer?
-    
     init(host: String) {
         self.host = host
     }
@@ -74,6 +58,36 @@ class PowerMeter: NSObject {
         completionHandler(nil)
     }
 
+    func startUpdatingCurrentWattage() {
+        update()
+        setupTimer()
+    }
+
+    func stopUpdatingCurrentWattage() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    var autoUpdateTimeInterval = NSTimeInterval(3) {
+        didSet {
+            if timer != nil { // update the current timer
+                setupTimer()
+            }
+        }
+    }
+    
+    // MARK: - Private data
+    
+    private var timer: NSTimer?
+    
+    private func setupTimer() {
+        timer?.invalidate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: Selector("update"),
+            userInfo: nil, repeats: true)
+    }
+    private var lastRequestStillPending = false
+    
+
     func update() {
         if delegate == nil || lastRequestStillPending { return }
         lastRequestStillPending = true
@@ -83,16 +97,6 @@ class PowerMeter: NSObject {
                 self.delegate?.didUpdateWattage(value)
             }
         }
-    }
-    
-    func stopUpdatingCurrentWattage() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    func startUpdatingCurrentWattage() {
-        update()
-        setupTimer()
     }
     
 }

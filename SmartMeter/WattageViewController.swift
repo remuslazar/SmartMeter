@@ -73,8 +73,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
     }
-    
-    
+   
     // MARK: - Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Storyboard.ShowDeviceInfoSegueIdentifier {
@@ -90,4 +89,3 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     }
     
 }
-
