@@ -78,8 +78,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     // MARK: - Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Storyboard.ShowDeviceInfoSegueIdentifier {
-            if let dvc = segue.destinationViewController as? PowerMeterInfoTableViewController {
-                dvc.powerMeter = self.powerMeter
+            if let powerMeterInfoTCC = segue.destinationViewController as? PowerMeterInfoTableViewController {
+                powerMeterInfoTCC.powerMeter = self.powerMeter
             }
         }
     }
