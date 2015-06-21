@@ -17,48 +17,35 @@ class PowerMeter: NSObject {
     
     // MARK: - public API
     
-    var delegate: PowerMeterDelegate?
+    init(host: String) { self.host = host }
 
     let host: String!
-    init(host: String) {
-        self.host = host
-    }
-    
+    var delegate: PowerMeterDelegate?
     var history = History()
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
     func readCurrentWattage(completionHandler: (Int?) -> Void) {
-        if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html"),
-            let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
-        {
-            
-            var n = 1 // default
-            if let offset = lastPowermeterUpdate?.timeIntervalSinceNow {
-                n = Int(-offset) + 5
-            }
-            n = min(n,100)
-            
-            u.queryItems = [
-                NSURLQueryItem(name: "ts", value: "0"),
-                NSURLQueryItem(name: "n", value: "\(n)")
-            ]
-            let requestBeginTimestamp = NSDate()
-            lastPowermeterUpdate = NSDate()
-            PowerProfile.parse(u.URL!) {
-                if let powerProfile = $0 as? PowerProfile{
-                    //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
-                    if let ts = powerProfile.endts {
-                        self.history.add(powerProfile)
-                        self.lastTimestamp = ts
-                        if (self.timeSkew == nil) { self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp) }
-//                        println("lastTS: \(self.lastTimestamp), startts: \(powerProfile.startts), endts: \(powerProfile.endts)")
-                    }
-                    completionHandler(powerProfile.v.last)
+        
+        var numSamples = 1 // default
+        if let offset = lastPowermeterUpdate?.timeIntervalSinceNow {
+            numSamples = Int(-offset) + 5
+        }
+        numSamples = min(numSamples,100)
+        let requestBeginTimestamp = NSDate()
+        lastPowermeterUpdate = NSDate()
+
+        readPowerProfile(numSamples: numSamples, lastts: nil) {
+            if let powerProfile = $0 {
+                //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
+                if let ts = powerProfile.endts {
+                    self.history.add(powerProfile)
+                    self.lastTimestamp = ts
+                    if (self.timeSkew == nil) { self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp) }
+//                    println("lastTS: \(self.lastTimestamp), startts: \(powerProfile.startts), endts: \(powerProfile.endts)")
                 }
+                completionHandler(powerProfile.v.last)
             }
-        } else {
-            completionHandler(nil)
         }
     }
     
@@ -123,6 +110,24 @@ class PowerMeter: NSObject {
         }
     }
     
+    // generic function to read a specific power profile from the power meter
+    private func readPowerProfile(#numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?) -> Void) {
+        if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html"),
+            let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
+        {
+            u.queryItems = [
+                NSURLQueryItem(name: "ts", value: PowerProfile.timestampFromDate(lastts)),
+                NSURLQueryItem(name: "n", value: "\(numSamples)")
+            ]
+            PowerProfile.parse(u.URL!) {
+                if let powerProfile = $0 as? PowerProfile {
+                    completionHandler(powerProfile)
+                }
+            }
+        } else {
+            completionHandler(nil)
+        }
+    }
     
     class History {
 
@@ -132,8 +137,8 @@ class PowerMeter: NSObject {
         }
 
         private var data = [Int?]()
-        private var startts: NSDate?
         let sampleRate = 1.0 // in seconds
+        var startts: NSDate?
         
         var endts: NSDate? {
             return startts?.dateByAddingTimeInterval(Double(data.count-1))
@@ -201,6 +206,10 @@ class PowerProfile : PowerMeterXMLData {
     var v = [Int]()
     var startts, endts: NSDate?
 
+    private struct Constants {
+        static let timestampFormatString = "yyMMddHHmmss's'"
+    }
+    
     class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
         PowerProfile(url: url, completionHandler: completionHandler).parse()
     }
@@ -221,17 +230,24 @@ class PowerProfile : PowerMeterXMLData {
             if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
                 v.append(value)
             }
-        case "startts": if inHeader { startts = powerMeterDateFormatter.dateFromString(input) }
-        case "endts": if inHeader { endts = powerMeterDateFormatter.dateFromString(input) }
+        case "startts": if inHeader { startts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
+        case "endts": if inHeader { endts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
         default: break
         }
     }
     
-    let powerMeterDateFormatter: NSDateFormatter = {
+    static let powerMeterDateFormatter: NSDateFormatter = {
         var formatter = NSDateFormatter()
-        formatter.dateFormat = "yyMMddHHmmss's'"
+        formatter.dateFormat = Constants.timestampFormatString
         return formatter
     }()
+    
+    class func timestampFromDate(date: NSDate?) -> String {
+        if let date = date {
+            return powerMeterDateFormatter.stringFromDate(date)
+        }
+        return "0"
+    }
 
 }
 
