@@ -44,21 +44,26 @@ class PowerMeter: NSObject {
     func readCurrentWattage(completionHandler: (Int?) -> Void) {
         
         var numSamples = 60 // get some more samples initially to display some nice data
-        if let offset = lastPowermeterUpdate?.timeIntervalSinceNow {
-            numSamples = Int(-offset) + 5
+        
+        // calculate how many samples we need from last request
+        if let skew = timeSkew {
+            let powermeterNow = NSDate().dateByAddingTimeInterval(timeSkew!)
+            let count = powermeterNow.timeIntervalSinceDate(lastTimestamp!)
+            numSamples = Int(count) + 3
+//            println("numSamples: \(numSamples)")
         }
+        
         numSamples = min(numSamples,100)
-        let requestBeginTimestamp = NSDate()
-        lastPowermeterUpdate = NSDate()
 
+        let requestBeginTimestamp = NSDate()
         readPowerProfile(numSamples: numSamples, lastts: nil) {
             if let powerProfile = $0 {
                 //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
                 if let ts = powerProfile.endts {
+//                    println("history endts: \(self.history.endts) startts: \(powerProfile.startts!), endts: \(powerProfile.endts!)")
                     self.history.add(powerProfile)
                     self.lastTimestamp = ts
-                    if (self.timeSkew == nil) { self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp) }
-//                    println("lastTS: \(self.lastTimestamp), startts: \(powerProfile.startts), endts: \(powerProfile.endts)")
+                    self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp)
                 }
                 completionHandler(powerProfile.v.last)
             }
@@ -110,7 +115,6 @@ class PowerMeter: NSObject {
     
     private var lastRequestStillPending = false
     private var lastTimestamp: NSDate?
-    private var lastPowermeterUpdate: NSDate?
 
     // time skew of the power meter device (negative means that the device RTC is late)
     private var timeSkew: NSTimeInterval?
@@ -194,7 +198,7 @@ class PowerMeter: NSObject {
         
         func prepend(powerProfile: PowerProfile) {
             data.splice(powerProfile.v.map({ $0 }), atIndex: 0)
-            startts = powerProfile.startts
+            startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-powerProfile.v.count))
             trim()
         }
         
@@ -206,6 +210,7 @@ class PowerMeter: NSObject {
                 var offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
                 //println("offset: \(offset), powerProfile.startts: \(powerProfile.startts!), endts: \(endts!)")
                 if (offset > 0) {
+                    println("\(offset) nil values")
                     for _ in 1...Int(offset) { data.append(nil) }
                     offset = 0
                 }
@@ -245,8 +250,12 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 class PowerProfile : PowerMeterXMLData {
 
     var v = [Int]()
-    var startts, endts: NSDate?
+    var endts: NSDate?
 
+    var startts: NSDate? {
+        return endts?.dateByAddingTimeInterval(NSTimeInterval(-(v.count-1)))
+    }
+    
     private struct Constants {
         static let timestampFormatString = "yyMMddHHmmss's'"
     }
@@ -271,7 +280,7 @@ class PowerProfile : PowerMeterXMLData {
             if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
                 v.append(value)
             }
-        case "startts": if inHeader { startts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
+//        case "startts": if inHeader { startts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
         case "endts": if inHeader { endts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
         default: break
         }

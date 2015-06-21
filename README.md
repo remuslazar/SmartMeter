@@ -136,6 +136,64 @@ You can fetch multiple historical values at once using n=100 e.g. (100 being the
 max. value, btw.). To fetch the whole buffer, you need 432 http requests and
 this process will take about 432 * 3 seconds = 21,6 minutes.
 
+### Ugly Bugs
+
+It seems that the returned values for startts/endts are not always consistent:
+
+#### Example 1
+
+```
+$ time curl -s 'http://192.168.37.20/InstantView/request/getPowerProfile.html?ts=150621131006s&n=1'
+<?xml version="1.0" encoding="UTF-8"?>
+<values xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/InstantView/request/powerProfile.xsd">
+	<header>
+		<name>Wirkleistung</name>
+		<obis>1.25.0</obis>
+		<startts>150621131006s</startts>
+		<endts>150621131006s</endts>
+		<samplerate>1</samplerate>
+		<no>1</no>
+		<error>false</error>
+	</header>
+	<v>307</v>
+</values>
+```
+
+In this case, the returned data is consistent:
+
+* Startts: 2015-05-21 13:10:06
+* Endts:   2015-05-21 13:10:06
+
+#### Example
+
+```
+time curl -s 'http://192.168.37.20/InstantView/request/getPowerProfile.html?ts=150621131006s&n=2'
+<?xml version="1.0" encoding="UTF-8"?>
+<values xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/InstantView/request/powerProfile.xsd">
+	<header>
+		<name>Wirkleistung</name>
+		<obis>1.25.0</obis>
+		<startts>150621130957s</startts>
+		<endts>150621131006s</endts>
+		<samplerate>1</samplerate>
+		<no>2</no>
+		<error>false</error>
+	</header>
+	<v>306</v>
+	<v>307</v>
+</values>
+```
+
+Here the device returns:
+
+* Startts: 2015-05-21 13:09:57 (wrong!, 8 seconds offset)
+* Endts:   2015-05-21 13:10:06
+
+Here the `startts` should be 13:10:05
+
+Some empirical research lead to the conclusion that the `endts` value should be
+trusted (the `startts` property being computable from `endts` and sample count `no`)
+
 
 References
 ==========
