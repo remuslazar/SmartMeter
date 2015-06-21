@@ -47,6 +47,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             if smartMeterHostname != oldValue && smartMeterHostname != nil {
                 powerMeter = PowerMeter(host: smartMeterHostname!)
                 powerMeter?.delegate = self
+                graphVC?.history = powerMeter?.history
             }
         }
     }
@@ -60,7 +61,6 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         } else {
             statusBottomLabel.text = nil
         }
-        graphVC?.history = powerMeter?.history
         graphVC?.updateGraph()
     }
     
@@ -124,7 +124,6 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         case Storyboard.GraphViewSegueIdentifier:
             if let vc = segue.destinationViewController as? GraphViewController {
                 self.graphVC = vc
-                vc.history = powerMeter?.history
             }
             
         default: break

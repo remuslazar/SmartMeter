@@ -8,33 +8,83 @@
 
 import UIKit
 
-class GraphViewController: UIViewController, GraphViewDatasource {
+class GraphViewController: UIViewController {
 
-    func graphViewgetSampleCount() -> Int {
-        return history?.count ?? 0
-    }
+    var powerGraphEngine: PowerGraphEngine?
     
-    func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
-        if history != nil {
-            if resample == 1 { return history!.getSample(x) }
-            return history!.getSample(x, resample: resample)
+    var history: PowerMeter.History! {
+        didSet {
+            if history != nil {
+                powerGraphEngine = PowerGraphEngine(history: history)
+                graphView?.datasource = powerGraphEngine
+                view.setNeedsDisplay()
+            }
         }
-        return nil
-    }
-    
-    var history: PowerMeter.History? {
-        didSet { view.setNeedsDisplay() }
     }
     
     @IBOutlet weak var graphView: GraphView! {
         didSet {
-            graphView.datasource = self
-            graphView.addGestureRecognizer(
-                UIPinchGestureRecognizer(target: graphView, action: "zoom:")
-            )
+            graphView.datasource = powerGraphEngine
+            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: "zoom:"))
+            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: "pan:"))
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "doubleTap:")
+            tapGestureRecognizer.numberOfTapsRequired = 2
+            graphView.addGestureRecognizer(tapGestureRecognizer)
+        }
+    }
+
+    func doubleTap(gesture: UITapGestureRecognizer) {
+        switch gesture.state {
+        case .Ended:
+            powerGraphEngine?.scaleX = 1.0
+            graphView.setNeedsDisplay()
+        default: break
         }
     }
     
+    func pan(gesture: UIPanGestureRecognizer) {
+        switch (gesture.state) {
+        case .Changed:
+            if powerGraphEngine != nil {
+                let translation = gesture.translationInView(graphView)
+                powerGraphEngine?.offsetX -= Int(translation.x / CGFloat(powerGraphEngine!.scaleX))
+                gesture.setTranslation(CGPointZero, inView: graphView)
+                graphView.setNeedsDisplay()
+            }
+        default: break
+        }
+    }
+    
+    func zoom(gesture: UIPinchGestureRecognizer) {
+        switch (gesture.state) {
+        case .Changed:
+            // we want to consider direction of the pinch to determine if we want to
+            // scale in the x or/and y direction
+            if gesture.numberOfTouches() >= 2 {
+                let fingers = [
+                    gesture.locationOfTouch(0, inView: graphView),
+                    gesture.locationOfTouch(1, inView: graphView)
+                ]
+                
+                let deltaX = abs(fingers[0].x - fingers[1].x)
+                let deltaY = abs(fingers[0].y - fingers[1].y)
+                let scale = 1.0 - gesture.scale
+                let scaleX = 1.0 - deltaX / (deltaX + deltaY) * scale
+                let scaleY = 1.0 - deltaY / (deltaX + deltaY) * scale
+                
+                gesture.scale = 1.0
+                
+                powerGraphEngine?.maxY /= Double(scaleY)
+                
+                powerGraphEngine?.scaleX *= Double(scaleX)
+                
+                graphView.setNeedsDisplay()
+            }
+            
+        default: break
+        }
+    }
+
     func updateGraph() { graphView.setNeedsDisplay() }
     
     override func viewDidLoad() {

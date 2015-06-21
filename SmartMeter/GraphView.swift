@@ -9,8 +9,9 @@
 import UIKit
 
 protocol GraphViewDatasource {
+    func graphViewGetMaxY() -> Double
     func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample?
-     func graphViewgetSampleCount() -> Int
+    func graphViewgetSampleCount() -> Int
 }
 
 class GraphView: UIView {
@@ -27,36 +28,22 @@ class GraphView: UIView {
         static let NumSamplesPerPixelRatioInPanOrZoomMode: CGFloat = 0.25
     }
     
-    func zoom(gesture: UIPinchGestureRecognizer) {
-        switch (gesture.state) {
-        case .Changed:
-            // we want to consider direction of the pinch to determine if we want to
-            // scale in the x or/and y direction
-            let fingers = [
-                gesture.locationOfTouch(0, inView: self),
-                gesture.locationOfTouch(1, inView: self)
-            ]
-        
-            let deltaX = abs(fingers[0].x - fingers[1].x)
-            let deltaY = abs(fingers[0].y - fingers[1].y)
-            let scale: CGFloat = 1.0 - gesture.scale
-            let scaleX = 1.0 - deltaX / (deltaX + deltaY) * scale
-            let scaleY = 1.0 - deltaY / (deltaX + deltaY) * scale
+    
+    var datasource: GraphViewDatasource?
 
-            maxY /= scaleY
-            
-            gesture.scale = 1.0
-            
-        default: break
+    var maxY: CGFloat {
+        return CGFloat(datasource!.graphViewGetMaxY())
+    }
+    
+    var offsetX: Int = 0 {
+        didSet {
+            if offsetX < 0 { offsetX = 0 } // dont go negative
+            setNeedsDisplay()
         }
     }
     
-    var datasource: GraphViewDatasource?
-    var maxY: CGFloat = 2000 { didSet { setNeedsDisplay() } }
-
-    
     var minX: NSDate? {
-        if let firstSamle =  datasource?.graphViewgetSample(0, resample: 1) {
+        if let firstSamle =  datasource?.graphViewgetSample(offsetX, resample: 1) {
             return firstSamle.timestamp
         }
         return nil
@@ -131,25 +118,27 @@ class GraphView: UIView {
         let path = UIBezierPath()
         var lastPoint: CGPoint?
 
-        let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource!.graphViewgetSampleCount()-1)
+        let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource!.graphViewgetSampleCount()-1-offsetX)
         let yScaleFactor: CGFloat = bounds.height / CGFloat(maxY)
         
-        let step = Int(ceil(CGFloat(datasource!.graphViewgetSampleCount()) /
+        let step = Int(ceil(CGFloat(datasource!.graphViewgetSampleCount()-offsetX) /
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
-        for var index = 0 ; index < datasource!.graphViewgetSampleCount() ; index += step {
+        for var index = offsetX ; index < datasource!.graphViewgetSampleCount() ; index += step {
             let sample = datasource?.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
-                let x = CGFloat(index) * xScaleFactor
-                let y = CGFloat(value) * yScaleFactor
-                let newPoint = CGPoint(x: x, y: bounds.height-y)
-                
-                if lastPoint != nil {
-                    path.addLineToPoint(newPoint)
-                } else {
-                    path.moveToPoint(newPoint)
+                let x = CGFloat(index-offsetX) * xScaleFactor
+                if x.isNormal {
+                    let y = CGFloat(value) * yScaleFactor
+                    let newPoint = CGPoint(x: x, y: bounds.height-y)
+                    
+                    if lastPoint != nil {
+                        path.addLineToPoint(newPoint)
+                    } else {
+                        path.moveToPoint(newPoint)
+                    }
+                    lastPoint = newPoint
                 }
-                lastPoint = newPoint
             }
         }
         UIColor.blackColor().set()
