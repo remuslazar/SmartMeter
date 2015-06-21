@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="TLY-hP-VOq">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--SmartMeter-->
@@ -29,14 +30,43 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-04-b5v">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="rewind" id="jKF-LQ-M2I">
+                                        <connections>
+                                            <action selector="rewindButton:" destination="BYZ-38-t0r" id="Ysq-A7-pYY"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Wbd-GO-Dkq"/>
+                                    <barButtonItem systemItem="action" id="m9w-Qs-d7l"/>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9g-aE-GpX">
+                                <rect key="frame" x="16" y="571" width="568" height="17"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="lYv-Cd-jve">
+                                <rect key="frame" x="290" y="568" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Maq-Fq-MKt" secondAttribute="bottom" constant="20" symbolic="YES" id="0PD-WK-ev3"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9g-aE-GpX" secondAttribute="bottom" constant="12" id="Hh7-2P-sZ4"/>
+                            <constraint firstItem="X9g-aE-GpX" firstAttribute="centerX" secondItem="5IY-04-b5v" secondAttribute="centerX" id="KSO-Uo-rcO"/>
+                            <constraint firstItem="5IY-04-b5v" firstAttribute="trailing" secondItem="Maq-Fq-MKt" secondAttribute="trailing" id="O2L-HQ-peu"/>
+                            <constraint firstItem="lYv-Cd-jve" firstAttribute="bottom" secondItem="X9g-aE-GpX" secondAttribute="bottom" id="Tg9-Dk-4yQ"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Wq6-JI-muY"/>
+                            <constraint firstItem="X9g-aE-GpX" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="XBc-PK-vMf"/>
+                            <constraint firstItem="lYv-Cd-jve" firstAttribute="centerX" secondItem="X9g-aE-GpX" secondAttribute="centerX" id="XUY-rO-gLV"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="a4P-IX-sjz"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="centerX" secondItem="Pfp-Al-qA4" secondAttribute="centerX" id="hW5-YM-lxu"/>
                             <constraint firstItem="Pfp-Al-qA4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ldQ-zQ-cYI"/>
+                            <constraint firstItem="5IY-04-b5v" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="qUx-XO-5LG"/>
+                            <constraint firstItem="5IY-04-b5v" firstAttribute="leading" secondItem="Maq-Fq-MKt" secondAttribute="leading" id="qiQ-vY-w1d"/>
                             <constraint firstItem="Pfp-Al-qA4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wKE-0M-s4X"/>
                         </constraints>
                     </view>
@@ -55,6 +85,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="bottomBarSpinner" destination="lYv-Cd-jve" id="omI-Me-5hs"/>
+                        <outlet property="statusBottomLabel" destination="X9g-aE-GpX" id="BSn-QD-ovf"/>
                         <outlet property="wattageLabel" destination="Pfp-Al-qA4" id="ffs-In-P6O"/>
                     </connections>
                 </viewController>

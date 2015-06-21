@@ -23,6 +23,20 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
 
     // MARK: - Outlets
     @IBOutlet weak var wattageLabel: UILabel!
+    @IBOutlet weak var statusBottomLabel: UILabel!
+    
+    @IBOutlet weak var bottomBarSpinner: UIActivityIndicatorView!
+    @IBAction func rewindButton(sender: UIBarButtonItem) {
+        sender.enabled = false
+        bottomBarSpinner.startAnimating()
+        statusBottomLabel.hidden = true
+        powerMeter?.readHistoricalValues {
+            sender.enabled = true
+            self.bottomBarSpinner.stopAnimating()
+            self.statusBottomLabel.hidden = false
+            self.updateUI()
+        }
+    }
     
     weak var graphVC: GraphViewController?
     
@@ -35,6 +49,19 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
                 powerMeter?.delegate = self
             }
         }
+    }
+    
+    private func updateUI() {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle
+        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        if let hist = powerMeter?.history where hist.startts != nil {
+            statusBottomLabel.text = "\(hist.count) Samples, \(dateFormatter.stringFromDate(hist.startts!)) - \(dateFormatter.stringFromDate(hist.endts!))"
+        } else {
+            statusBottomLabel.text = nil
+        }
+        graphVC?.history = powerMeter?.history
+        graphVC?.updateGraph()
     }
     
     func readUserDefaults() {
@@ -50,8 +77,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     // MARK: - PowerMeterDelegate
     func didUpdateWattage(currentWattage: Int) {
         self.wattageLabel.text = "\(currentWattage) W"
-        graphVC?.history = powerMeter?.history
-        graphVC?.updateGraph()
+        updateUI()
     }
 
     // MARK: - ViewController Lifetime
@@ -78,6 +104,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaults"),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
+        updateUI()
     }
    
     // MARK: - Segue

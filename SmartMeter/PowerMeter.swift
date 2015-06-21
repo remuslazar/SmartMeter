@@ -21,13 +21,29 @@ class PowerMeter: NSObject {
 
     let host: String!
     var delegate: PowerMeterDelegate?
-    var history = History()
+    var history = History(size: 300) // historical data for 5 minutes
+    
+    func readHistoricalValues(#completionHandler: () -> Void) {
+        // e.g. startts = 01.01.2015 10:22:33 we need to read data until
+        //                01.01.2015 10:22:32
+        let lastTimestamp = history.startts?.dateByAddingTimeInterval(-1)
+        readPowerProfile(numSamples: 100, lastts: lastTimestamp) {
+            if let powerProfile = $0 {
+                let remainingCapacity = self.history.size - self.history.count
+                if remainingCapacity < powerProfile.v.count {
+                    self.history.size += powerProfile.v.count - remainingCapacity
+                }
+                self.history.prepend(powerProfile)
+            }
+            completionHandler()
+        }
+    }
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
     func readCurrentWattage(completionHandler: (Int?) -> Void) {
         
-        var numSamples = 1 // default
+        var numSamples = 60 // get some more samples initially to display some nice data
         if let offset = lastPowermeterUpdate?.timeIntervalSinceNow {
             numSamples = Int(-offset) + 5
         }
@@ -129,14 +145,23 @@ class PowerMeter: NSObject {
         }
     }
     
+    // MARK: = Class History
+    
     class History {
 
+        init(size newSize: Int) {
+            self.size = newSize
+        }
+        
         struct PowerSample {
             let timestamp: NSDate
             let value: Int?
         }
 
         private var data = [Int?]()
+
+        // size in num samples (seconds)
+        var size: Int { didSet { trim() } }
         let sampleRate = 1.0 // in seconds
         var startts: NSDate?
         
@@ -158,6 +183,21 @@ class PowerMeter: NSObject {
             return nil
         }
         
+        // trim the data to not exceed the size constraint
+        private func trim() {
+            let count = self.count - size
+            if (count > 0) {
+                for _ in 1...count { data.removeAtIndex(0) }
+                startts = startts?.dateByAddingTimeInterval(NSTimeInterval(count))
+            }
+        }
+        
+        func prepend(powerProfile: PowerProfile) {
+            data.splice(powerProfile.v.map({ $0 }), atIndex: 0)
+            startts = powerProfile.startts
+            trim()
+        }
+        
         func add(powerProfile: PowerProfile) {
             if startts == nil {
                 startts = powerProfile.startts
@@ -174,6 +214,7 @@ class PowerMeter: NSObject {
                     for index in skip..<powerProfile.v.count { data.append(powerProfile.v[index]) }
                 }
             }
+            trim()
             //println("\(data)")
         }
         
