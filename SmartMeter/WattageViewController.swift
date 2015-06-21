@@ -16,12 +16,15 @@ struct UserDefaults {
 private struct Storyboard {
     static let ShowDeviceInfoSegueIdentifier = "ShowDeviceInfo"
     static let ShowHistorySegueIdentifier = "ShowHistory"
+    static let GraphViewSegueIdentifier = "MiniGraph"
 }
 
 class WattageViewController: UIViewController, PowerMeterDelegate {
 
     // MARK: - Outlets
     @IBOutlet weak var wattageLabel: UILabel!
+    
+    weak var graphVC: GraphViewController?
     
     // MARK: - Private data and methods
     private var powerMeter: PowerMeter?
@@ -47,6 +50,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     // MARK: - PowerMeterDelegate
     func didUpdateWattage(currentWattage: Int) {
         self.wattageLabel.text = "\(currentWattage) W"
+        graphVC?.history = powerMeter?.history
+        graphVC?.updateGraph()
     }
 
     // MARK: - ViewController Lifetime
@@ -87,6 +92,12 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         case Storyboard.ShowHistorySegueIdentifier:
             if let historyTVC = segue.destinationViewController as? PowermeterHistoryTableViewController {
                 historyTVC.history = powerMeter?.history
+            }
+            
+        case Storyboard.GraphViewSegueIdentifier:
+            if let vc = segue.destinationViewController as? GraphViewController {
+                self.graphVC = vc
+                vc.history = powerMeter?.history
             }
             
         default: break

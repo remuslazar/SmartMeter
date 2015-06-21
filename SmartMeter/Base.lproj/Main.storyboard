@@ -16,6 +16,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Maq-Fq-MKt">
+                                <rect key="frame" x="0.0" y="64" width="600" height="516"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="XOU-Qc-NWe" kind="embed" identifier="MiniGraph" id="Coj-Ec-38Q"/>
+                                </connections>
+                            </containerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 W" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfp-Al-qA4">
                                 <rect key="frame" x="258" y="271" width="85" height="58"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="48"/>
@@ -25,6 +32,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Maq-Fq-MKt" secondAttribute="bottom" constant="20" symbolic="YES" id="0PD-WK-ev3"/>
+                            <constraint firstItem="Maq-Fq-MKt" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Wq6-JI-muY"/>
+                            <constraint firstItem="Maq-Fq-MKt" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="a4P-IX-sjz"/>
+                            <constraint firstItem="Maq-Fq-MKt" firstAttribute="centerX" secondItem="Pfp-Al-qA4" secondAttribute="centerX" id="hW5-YM-lxu"/>
                             <constraint firstItem="Pfp-Al-qA4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ldQ-zQ-cYI"/>
                             <constraint firstItem="Pfp-Al-qA4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wKE-0M-s4X"/>
                         </constraints>
@@ -228,6 +239,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nKu-G7-CHv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1227" y="706"/>
+        </scene>
+        <!--Graph View Controller-->
+        <scene sceneID="Dal-rz-VEE">
+            <objects>
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="XOU-Qc-NWe" customClass="GraphViewController" customModule="SmartMeter" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0WH-oY-drH"/>
+                        <viewControllerLayoutGuide type="bottom" id="fyu-eN-sTC"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="eAL-hT-7JV">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="516"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="nXp-pf-eGc" customClass="GraphView" customModule="SmartMeter" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="516"/>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="nXp-pf-eGc" secondAttribute="trailing" id="MoM-Ov-okZ"/>
+                            <constraint firstItem="nXp-pf-eGc" firstAttribute="top" secondItem="0WH-oY-drH" secondAttribute="bottom" id="V9c-HM-hFV"/>
+                            <constraint firstItem="nXp-pf-eGc" firstAttribute="bottom" secondItem="fyu-eN-sTC" secondAttribute="top" id="bMU-eR-Y2q"/>
+                            <constraint firstItem="nXp-pf-eGc" firstAttribute="leading" secondItem="eAL-hT-7JV" secondAttribute="leading" id="iFq-ET-1Rh"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <connections>
+                        <outlet property="graphView" destination="nXp-pf-eGc" id="hbs-0e-SmQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PlX-0g-thj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2039" y="1417.5"/>
         </scene>
     </scenes>
 </document>

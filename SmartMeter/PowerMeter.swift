@@ -24,15 +24,6 @@ class PowerMeter: NSObject {
         self.host = host
     }
     
-    var numberOfSamplesNeeded: Double? {
-        if timeSkew != nil {
-            if let lastRequestDate = lastTimestamp?.dateByAddingTimeInterval(-timeSkew!) {
-                return -lastRequestDate.timeIntervalSinceNow
-            }
-        }
-        return nil
-    }
-    
     var history = History()
     
     // read the current wattage from the power meter asynchronously
@@ -42,24 +33,25 @@ class PowerMeter: NSObject {
             let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
         {
             
-            var n = "1" // default
-            if let double = numberOfSamplesNeeded {
-                let number = NSNumber(double: double+3)
-                n = "\(number.integerValue)"
+            var n = 1 // default
+            if let offset = lastPowermeterUpdate?.timeIntervalSinceNow {
+                n = Int(-offset) + 5
             }
+            n = min(n,100)
             
             u.queryItems = [
                 NSURLQueryItem(name: "ts", value: "0"),
-                NSURLQueryItem(name: "n", value: n)
+                NSURLQueryItem(name: "n", value: "\(n)")
             ]
             let requestBeginTimestamp = NSDate()
+            lastPowermeterUpdate = NSDate()
             PowerProfile.parse(u.URL!) {
                 if let powerProfile = $0 as? PowerProfile{
                     //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
                     if let ts = powerProfile.endts {
                         self.history.add(powerProfile)
                         self.lastTimestamp = ts
-                        self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp)
+                        if (self.timeSkew == nil) { self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp) }
 //                        println("lastTS: \(self.lastTimestamp), startts: \(powerProfile.startts), endts: \(powerProfile.endts)")
                     }
                     completionHandler(powerProfile.v.last)
@@ -115,6 +107,7 @@ class PowerMeter: NSObject {
     
     private var lastRequestStillPending = false
     private var lastTimestamp: NSDate?
+    private var lastPowermeterUpdate: NSDate?
 
     // time skew of the power meter device (negative means that the device RTC is late)
     private var timeSkew: NSTimeInterval?
@@ -143,7 +136,7 @@ class PowerMeter: NSObject {
         let sampleRate = 1.0 // in seconds
         
         var endts: NSDate? {
-            return startts?.dateByAddingTimeInterval(Double(data.count))
+            return startts?.dateByAddingTimeInterval(Double(data.count-1))
         }
         
         var count: Int {
@@ -165,15 +158,15 @@ class PowerMeter: NSObject {
                 startts = powerProfile.startts
                 data = powerProfile.v.map { $0 }
             } else {
-                let offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
+                var offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
+                //println("offset: \(offset), powerProfile.startts: \(powerProfile.startts!), endts: \(endts!)")
                 if (offset > 0) {
-                    // we are missing offset values, fill them with nil values
                     for _ in 1...Int(offset) { data.append(nil) }
-                } else {
-                    let skip = Int(-offset)
-                    if (skip < powerProfile.v.count) {
-                        for index in skip..<powerProfile.v.count { data.append(powerProfile.v[index]) }
-                    }
+                    offset = 0
+                }
+                let skip = Int(-offset)
+                if (skip < powerProfile.v.count) {
+                    for index in skip..<powerProfile.v.count { data.append(powerProfile.v[index]) }
                 }
             }
             //println("\(data)")
