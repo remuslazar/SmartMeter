@@ -23,6 +23,7 @@ class GraphView: UIView {
         static let XScaleMarginBottom: CGFloat = 42
         static let YScaleMarginLeft: CGFloat = 8
         static let LegendColor: UIColor = UIColor.lightGrayColor()
+        static let NumSamplesPerPixelRatio: CGFloat = 1.0 // 1.0 will fully use the retina resolution
     }
     
     func zoom(gesture: UIPinchGestureRecognizer) {
@@ -117,7 +118,10 @@ class GraphView: UIView {
         let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource!.graphViewgetSampleCount()-1)
         let yScaleFactor: CGFloat = bounds.height / CGFloat(maxY)
         
-        for index in 0..<datasource!.graphViewgetSampleCount() {
+        let step = Int(ceil(CGFloat(datasource!.graphViewgetSampleCount()) /
+            (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
+        
+        for var index = 0 ; index < datasource!.graphViewgetSampleCount() ; index += step {
             let sample = datasource?.graphViewgetSample(index)
             if let value = sample?.value {
                 let x = CGFloat(index) * xScaleFactor
