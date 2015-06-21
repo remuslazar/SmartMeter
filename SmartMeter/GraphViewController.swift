@@ -14,8 +14,12 @@ class GraphViewController: UIViewController, GraphViewDatasource {
         return history?.count ?? 0
     }
     
-    func graphViewgetSample(x: Int) -> PowerMeter.History.PowerSample? {
-        return history?.getSample(x)
+    func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
+        if history != nil {
+            if resample == 1 { return history!.getSample(x) }
+            return history!.getSample(x, resample: resample)
+        }
+        return nil
     }
     
     var history: PowerMeter.History? {

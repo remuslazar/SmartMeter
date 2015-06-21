@@ -9,7 +9,7 @@
 import UIKit
 
 protocol GraphViewDatasource {
-     func graphViewgetSample(x: Int) -> PowerMeter.History.PowerSample?
+    func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample?
      func graphViewgetSampleCount() -> Int
 }
 
@@ -24,13 +24,29 @@ class GraphView: UIView {
         static let YScaleMarginLeft: CGFloat = 8
         static let LegendColor: UIColor = UIColor.lightGrayColor()
         static let NumSamplesPerPixelRatio: CGFloat = 1.0 // 1.0 will fully use the retina resolution
+        static let NumSamplesPerPixelRatioInPanOrZoomMode: CGFloat = 0.25
     }
     
     func zoom(gesture: UIPinchGestureRecognizer) {
         switch (gesture.state) {
         case .Changed:
-            maxY /= gesture.scale
+            // we want to consider direction of the pinch to determine if we want to
+            // scale in the x or/and y direction
+            let fingers = [
+                gesture.locationOfTouch(0, inView: self),
+                gesture.locationOfTouch(1, inView: self)
+            ]
+        
+            let deltaX = abs(fingers[0].x - fingers[1].x)
+            let deltaY = abs(fingers[0].y - fingers[1].y)
+            let scale: CGFloat = 1.0 - gesture.scale
+            let scaleX = 1.0 - deltaX / (deltaX + deltaY) * scale
+            let scaleY = 1.0 - deltaY / (deltaX + deltaY) * scale
+
+            maxY /= scaleY
+            
             gesture.scale = 1.0
+            
         default: break
         }
     }
@@ -40,7 +56,7 @@ class GraphView: UIView {
 
     
     var minX: NSDate? {
-        if let firstSamle =  datasource?.graphViewgetSample(0) {
+        if let firstSamle =  datasource?.graphViewgetSample(0, resample: 1) {
             return firstSamle.timestamp
         }
         return nil
@@ -122,7 +138,7 @@ class GraphView: UIView {
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
         for var index = 0 ; index < datasource!.graphViewgetSampleCount() ; index += step {
-            let sample = datasource?.graphViewgetSample(index)
+            let sample = datasource?.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
                 let x = CGFloat(index) * xScaleFactor
                 let y = CGFloat(value) * yScaleFactor

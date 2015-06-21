@@ -187,6 +187,23 @@ class PowerMeter: NSObject {
             return nil
         }
         
+        func getSample(index: Int, resample: Int) -> PowerSample? {
+            if let sample = getSample(index) {
+                var sum: Int = 0
+                var count = 0
+                for i: Int in 0..<resample {
+                    if data.count == index+i { break }
+                    if let val = data[index+i]?.value {
+                        sum += Int(val)
+                        count += 1
+                    }
+                }
+                if count == 0 { return sample }
+                return PowerSample(timestamp: sample.timestamp, value: Int(round(Double(sum) / Double(count))))
+            }
+            return nil
+        }
+        
         // trim the data to not exceed the size constraint
         private func trim() {
             let count = self.count - size
