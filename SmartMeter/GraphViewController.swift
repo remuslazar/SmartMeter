@@ -23,9 +23,18 @@ class GraphViewController: UIViewController, GraphViewDatasource {
     }
     
     @IBOutlet weak var graphView: GraphView! {
-        didSet { graphView.datasource = self }
+        didSet {
+            graphView.datasource = self
+            graphView.addGestureRecognizer(
+                UIPinchGestureRecognizer(target: graphView, action: "zoom:")
+            )
+        }
     }
     
     func updateGraph() { graphView.setNeedsDisplay() }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
 
 }

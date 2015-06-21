@@ -30,7 +30,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-04-b5v">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-04-b5v">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
                                     <barButtonItem systemItem="rewind" id="jKF-LQ-M2I">
@@ -286,6 +286,7 @@
                         <subviews>
                             <view opaque="NO" contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="nXp-pf-eGc" customClass="GraphView" customModule="SmartMeter" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="516"/>
+                                <gestureRecognizers/>
                             </view>
                         </subviews>
                         <constraints>
