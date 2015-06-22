@@ -62,7 +62,7 @@ class GraphView: UIView {
         }
         
         UIColor.blackColor().set()
-        path.lineWidth = Constants.lineWidth
+        path.lineWidth = Constants.lineWidth
         path.stroke()
         
         if let minX = datasource?.graphViewgetSample(0, resample: 1)?.timestamp,
