@@ -10,8 +10,10 @@ import UIKit
 
 class GraphViewController: UIViewController {
 
-    var powerGraphEngine: PowerGraphEngine?
+        // MARK: - Public API
+    func updateGraph() { graphView.setNeedsDisplay() }
     
+    // our model
     var history: PowerMeter.History! {
         didSet {
             if history != nil {
@@ -21,7 +23,11 @@ class GraphViewController: UIViewController {
             }
         }
     }
+
+    private var powerGraphEngine: PowerGraphEngine?
     
+    // MARK: - Outlets
+
     @IBOutlet weak var graphView: GraphView! {
         didSet {
             graphView.datasource = powerGraphEngine
@@ -33,6 +39,8 @@ class GraphViewController: UIViewController {
         }
     }
 
+    // MARK: - Gesture Recognizer methods
+    
     func doubleTap(gesture: UITapGestureRecognizer) {
         switch gesture.state {
         case .Ended:
@@ -90,11 +98,4 @@ class GraphViewController: UIViewController {
         default: break
         }
     }
-
-    func updateGraph() { graphView.setNeedsDisplay() }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
 }

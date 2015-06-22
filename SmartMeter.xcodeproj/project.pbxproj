@@ -50,8 +50,8 @@
 		D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowermeterHistoryTableViewController.swift; sourceTree = "<group>"; };
 		D88AE4C71B3607BA00D8202B /* GraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
 		D88AE4C91B36082D00D8202B /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
-		D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PowerGraphEngine.swift; path = SmartMeter/PowerGraphEngine.swift; sourceTree = "<group>"; };
-		D88C2A001B384038006302F8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AxesDrawer.swift; path = SmartMeter/AxesDrawer.swift; sourceTree = "<group>"; };
+		D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerGraphEngine.swift; sourceTree = "<group>"; };
+		D88C2A001B384038006302F8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +75,6 @@
 		D87D6C1F1B2F0E9A003A2A6F = {
 			isa = PBXGroup;
 			children = (
-				D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */,
-				D88C2A001B384038006302F8 /* AxesDrawer.swift */,
 				D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */,
 				D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */,
 				D87D6C291B2F0E9A003A2A6F /* Products */,
@@ -95,8 +93,8 @@
 		D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */ = {
 			isa = PBXGroup;
 			children = (
-				D87D6C511B301F12003A2A6F /* Settings.bundle */,
-				D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */,
+				D88C2A001B384038006302F8 /* AxesDrawer.swift */,
+				D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */,
 				D87D6C2F1B2F0E9A003A2A6F /* WattageViewController.swift */,
 				D87D6C311B2F0E9A003A2A6F /* Main.storyboard */,
 				D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */,
@@ -114,6 +112,8 @@
 		D87D6C2B1B2F0E9A003A2A6F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D87D6C2D1B2F0E9A003A2A6F /* AppDelegate.swift */,
+				D87D6C511B301F12003A2A6F /* Settings.bundle */,
 				D87D6C2C1B2F0E9A003A2A6F /* Info.plist */,
 			);
 			name = "Supporting Files";
