@@ -35,15 +35,8 @@ class GraphView: UIView {
         return CGFloat(datasource!.graphViewGetMaxY())
     }
     
-    var offsetX: Int = 0 {
-        didSet {
-            if offsetX < 0 { offsetX = 0 } // dont go negative
-            setNeedsDisplay()
-        }
-    }
-    
     var minX: NSDate? {
-        if let firstSamle =  datasource?.graphViewgetSample(offsetX, resample: 1) {
+        if let firstSamle =  datasource?.graphViewgetSample(0, resample: 1) {
             return firstSamle.timestamp
         }
         return nil
@@ -118,16 +111,16 @@ class GraphView: UIView {
         let path = UIBezierPath()
         var lastPoint: CGPoint?
 
-        let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource!.graphViewgetSampleCount()-1-offsetX)
+        let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource!.graphViewgetSampleCount()-1)
         let yScaleFactor: CGFloat = bounds.height / CGFloat(maxY)
         
-        let step = Int(ceil(CGFloat(datasource!.graphViewgetSampleCount()-offsetX) /
+        let step = Int(ceil(CGFloat(datasource!.graphViewgetSampleCount()) /
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
-        for var index = offsetX ; index < datasource!.graphViewgetSampleCount() ; index += step {
+        for var index = 0 ; index < datasource!.graphViewgetSampleCount() ; index += step {
             let sample = datasource?.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
-                let x = CGFloat(index-offsetX) * xScaleFactor
+                let x = CGFloat(index) * xScaleFactor
                 if x.isNormal {
                     let y = CGFloat(value) * yScaleFactor
                     let newPoint = CGPoint(x: x, y: bounds.height-y)
