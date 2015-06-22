@@ -23,11 +23,32 @@ class PowerMeter: NSObject {
     var delegate: PowerMeterDelegate?
     var history = History(size: 300) // historical data for 5 minutes
     
-    func readHistoricalValues(#completionHandler: () -> Void) {
+    // abort the current fetch request
+    var abortCurrentFetchRequest = false
+    
+    // read power samples from the power meter and append them to the history data
+    // the maximum batch size supported by the device is currently 100, which is also the default
+    func readSamples(num: Int, batchSize: Int = 100, completionHandler: (remaining: Int) -> Void) {
+        readSamples {
+            let remaining = max(0, num - batchSize)
+            if self.abortCurrentFetchRequest {
+                completionHandler(remaining: 0)
+                self.abortCurrentFetchRequest = false
+            } else {
+                completionHandler(remaining: remaining)
+                if remaining > 0 {
+                    self.readSamples(remaining, completionHandler: completionHandler)
+                }
+            }
+        }
+    }
+    
+    // internal function to read one batch of data from the power meter
+    private func readSamples(count: Int = 100, completionHandler: () -> Void) {
         // e.g. startts = 01.01.2015 10:22:33 we need to read data until
         //                01.01.2015 10:22:32
         let lastTimestamp = history.startts?.dateByAddingTimeInterval(-1)
-        readPowerProfile(numSamples: 100, lastts: lastTimestamp) {
+        readPowerProfile(numSamples: count, lastts: lastTimestamp) {
             if let powerProfile = $0 {
                 let remainingCapacity = self.history.size - self.history.count
                 if remainingCapacity < powerProfile.v.count {
@@ -41,9 +62,9 @@ class PowerMeter: NSObject {
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
-    func readCurrentWattage(completionHandler: (Int?) -> Void) {
+    func readCurrentWattage(initialSamples: Int = 30, completionHandler: (Int?) -> Void) {
         
-        var numSamples = 60 // get some more samples initially to display some nice data
+        var numSamples = initialSamples
         
         // calculate how many samples we need from last request
         if let skew = timeSkew {
@@ -93,6 +114,10 @@ class PowerMeter: NSObject {
     func stopUpdatingCurrentWattage() {
         timer?.invalidate()
         timer = nil
+    }
+    
+    func isCurrentlyUpdatingCurrentWattage() -> Bool {
+        return timer != nil && timer!.valid
     }
     
     var autoUpdateTimeInterval = NSTimeInterval(3) {
