@@ -44,20 +44,18 @@ class GraphView: UIView {
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
         for var index = 0 ; index < datasource!.graphViewgetSampleCount() ; index += step {
-            let sample = datasource?.graphViewgetSample(index, resample: step)
+            let sample = datasource!.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
                 let x = CGFloat(index) * xScaleFactor
-                if x.isNormal {
-                    let y = CGFloat(value) * yScaleFactor
-                    let newPoint = CGPoint(x: x, y: bounds.height-y)
-                    
-                    if lastPoint != nil {
-                        path.addLineToPoint(newPoint)
-                    } else {
-                        path.moveToPoint(newPoint)
-                    }
-                    lastPoint = newPoint
+                let y = CGFloat(value) * yScaleFactor
+                let newPoint = CGPoint(x: x, y: bounds.height-y)
+                
+                if lastPoint != nil {
+                    path.addLineToPoint(newPoint)
+                } else {
+                    path.moveToPoint(newPoint)
                 }
+                lastPoint = newPoint
             }
         }
         

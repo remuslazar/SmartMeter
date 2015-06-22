@@ -18,35 +18,36 @@ class PowerGraphEngine: GraphViewDatasource {
 
     var scaleX = 1.0 {
         didSet {
-            scaleX = max(1.0, scaleX) // dont let scale be < 1.0
+            scaleX = max(1.0, min(Double(graphViewgetSampleCount()/2) ,scaleX)) // dont let scale be < 1.0
             // center the graph after scaling
-            offsetX += Int((scaleX - oldValue) * Double(numVisibleSamples) / 2)
+            offsetX += (scaleX - oldValue) * numVisibleSamples / 2
         }
     }
     
-    var offsetX: Int = 0 {
+    var offsetX = 0.0 {
         didSet {
-            offsetX = abs(offsetX) // should be always positive
+            offsetX = max(0,offsetX) // should be always positive
             if rightPadding < 0 { offsetX += rightPadding }
         }
     }
     
     var maxY: Double = 2000
     
-    private var numVisibleSamples: Int {
-        return Int(Double(history.count ?? 0) / scaleX)
+    private var numVisibleSamples: Double {
+        return Double(history.count) / scaleX
     }
     
-    private var rightPadding: Int {
-        return history.count - numVisibleSamples - offsetX
+    private var rightPadding: Double {
+        return Double(history.count) - numVisibleSamples - offsetX
     }
     
     func graphViewgetSampleCount() -> Int {
-        return numVisibleSamples
+        // just in case, assert that it is <= history.count
+        return min(Int(round(numVisibleSamples)), history.count)
     }
     
     func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
-        let index = x + offsetX
+        let index = x + Int(round(offsetX))
         if resample == 1 { return history.getSample(index) }
         return history.getSample(index, resample: resample)
     }

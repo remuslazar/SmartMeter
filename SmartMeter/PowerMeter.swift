@@ -70,7 +70,7 @@ class PowerMeter: NSObject {
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
-    func readCurrentWattage(initialSamples: Int = 30, completionHandler: (Int?) -> Void) {
+    func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?) -> Void) {
         
         var numSamples = initialSamples
         

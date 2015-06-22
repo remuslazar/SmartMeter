@@ -57,12 +57,17 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             preferredStyle: UIAlertControllerStyle.ActionSheet
         )
         if progressBar.hidden {
-            for timespan in [5,15,30,60,120] {
+            for timespan in [5,15,60,120] {
                 sheet.addAction(UIAlertAction(title: "\(timespan) minutes (\(timespan * 60) samples)",
                     style: .Default, handler: { (_) in
                         self.loadHistory(timespan: NSTimeInterval(timespan * 60))
                 }))
             }
+            sheet.addAction(UIAlertAction(title: "Reset local history",
+                style: .Destructive, handler: { (_) in
+                    self.powerMeter?.history.purge()
+                    self.updateUI()
+            }))
         } else {
             sheet.addAction(UIAlertAction(title: "Abort current transfer",
                 style: .Destructive, handler: { (_) in
