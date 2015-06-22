@@ -38,6 +38,11 @@
                                             <action selector="toggleAutoupdate:" destination="BYZ-38-t0r" id="zMg-RW-moq"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem title="Calc" id="hbN-Fm-sSb">
+                                        <connections>
+                                            <action selector="toggleCalc:" destination="BYZ-38-t0r" id="XpL-T9-5Os"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Wbd-GO-Dkq"/>
                                     <barButtonItem systemItem="action" id="m9w-Qs-d7l">
                                         <connections>

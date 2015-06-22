@@ -56,5 +56,9 @@ class PowerGraphEngine: GraphViewDatasource {
         return maxY
     }
     
+    func select(#x1: Double, x2: Double, y0: Double) {
+        println("x1: \(x1), x2: \(x2), y0: \(y0)")
+    }
+    
     
 }

@@ -19,7 +19,7 @@ private struct Storyboard {
     static let GraphViewSegueIdentifier = "MiniGraph"
 }
 
-class WattageViewController: UIViewController, PowerMeterDelegate {
+class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDelegate {
     
     private struct Labels {
         static let ActionSheetTitle = "Load Historical Data"
@@ -48,6 +48,18 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
     
     @IBAction func toggleAutoupdate(sender: UIBarButtonItem) {
         autoUpdate = !autoUpdate
+    }
+    
+    private var integrateArea = false
+
+    func shouldCalculateAreaOnPan() -> Bool {
+        return integrateArea
+    }
+    
+    @IBAction func toggleCalc(sender: AnyObject) {
+        integrateArea = !integrateArea
+        autoUpdate = !integrateArea
+        pauseButton.enabled = !integrateArea
     }
     
     @IBAction func showActionsheet(sender: AnyObject) {
@@ -184,6 +196,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         case Storyboard.GraphViewSegueIdentifier:
             if let vc = segue.destinationViewController as? GraphViewController {
                 self.graphVC = vc
+                vc.delegate = self
             }
             
         default: break

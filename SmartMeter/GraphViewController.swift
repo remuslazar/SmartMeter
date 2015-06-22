@@ -8,10 +8,16 @@
 
 import UIKit
 
+protocol GraphViewDelegate {
+    func shouldCalculateAreaOnPan() -> Bool
+}
+
 class GraphViewController: UIViewController {
 
-        // MARK: - Public API
+    // MARK: - Public API
     func updateGraph() { graphView.setNeedsDisplay() }
+    
+    var delegate: GraphViewDelegate?
     
     // our model
     var history: PowerMeter.History! {
@@ -51,17 +57,43 @@ class GraphViewController: UIViewController {
     }
     
     func pan(gesture: UIPanGestureRecognizer) {
-        switch (gesture.state) {
-        case .Changed:
-            if powerGraphEngine != nil {
-                let translation = gesture.translationInView(graphView)
-                let samplesPerPoint = CGFloat(powerGraphEngine!.graphViewgetSampleCount()) / graphView.bounds.width
-                powerGraphEngine?.offsetX -= Double(translation.x * samplesPerPoint)
-                gesture.setTranslation(CGPointZero, inView: graphView)
-                graphView.setNeedsDisplay()
-            }
-        default: break
+        
+        struct State {
+            static var firstEdge = CGPointZero
         }
+        
+        if delegate != nil && delegate!.shouldCalculateAreaOnPan() {
+            switch gesture.state {
+            case .Began:
+                println("began")
+                State.firstEdge = gesture.translationInView(graphView)
+            case .Changed:
+                println("changed")
+                let secondEdge = gesture.translationInView(graphView)
+                powerGraphEngine?.select(
+                    x1: Double(min(State.firstEdge.x, secondEdge.x)),
+                    x2: Double(max(State.firstEdge.x, secondEdge.x)),
+                    y0: Double(max(State.firstEdge.y, secondEdge.y))
+                )
+                
+            case .Ended:
+                println("ended")
+            default: break
+            }
+        } else {
+            switch gesture.state {
+            case .Changed:
+                if powerGraphEngine != nil {
+                    let translation = gesture.translationInView(graphView)
+                    let samplesPerPoint = CGFloat(powerGraphEngine!.graphViewgetSampleCount()) / graphView.bounds.width
+                    powerGraphEngine?.offsetX -= Double(translation.x * samplesPerPoint)
+                    gesture.setTranslation(CGPointZero, inView: graphView)
+                    graphView.setNeedsDisplay()
+                }
+            default: break
+            }
+        }
+        
     }
     
     func zoom(gesture: UIPinchGestureRecognizer) {
