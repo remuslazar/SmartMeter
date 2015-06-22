@@ -57,6 +57,11 @@ class GraphViewController: UIViewController {
     }
     
     func zoom(gesture: UIPinchGestureRecognizer) {
+        
+        func constrain(input: CGFloat) -> CGFloat {
+            return input < 0.2 ? 0 : input > 0.8 ? 1 : input
+        }
+        
         switch (gesture.state) {
         case .Changed:
             // we want to consider direction of the pinch to determine if we want to
@@ -70,8 +75,8 @@ class GraphViewController: UIViewController {
                 let deltaX = abs(fingers[0].x - fingers[1].x)
                 let deltaY = abs(fingers[0].y - fingers[1].y)
                 let scale = 1.0 - gesture.scale
-                let scaleX = 1.0 - deltaX / (deltaX + deltaY) * scale
-                let scaleY = 1.0 - deltaY / (deltaX + deltaY) * scale
+                let scaleX = 1.0 - constrain(deltaX / (deltaX + deltaY)) * scale
+                let scaleY = 1.0 - constrain(deltaY / (deltaX + deltaY)) * scale
                 
                 gesture.scale = 1.0
                 
