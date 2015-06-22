@@ -20,6 +20,7 @@
 		D88AE4C81B3607BA00D8202B /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4C71B3607BA00D8202B /* GraphViewController.swift */; };
 		D88AE4CA1B36082D00D8202B /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4C91B36082D00D8202B /* GraphView.swift */; };
 		D88AE4CC1B37475E00D8202B /* PowerGraphEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */; };
+		D88C2A011B384038006302F8 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88C2A001B384038006302F8 /* AxesDrawer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		D88AE4C71B3607BA00D8202B /* GraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
 		D88AE4C91B36082D00D8202B /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PowerGraphEngine.swift; path = SmartMeter/PowerGraphEngine.swift; sourceTree = "<group>"; };
+		D88C2A001B384038006302F8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AxesDrawer.swift; path = SmartMeter/AxesDrawer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */,
+				D88C2A001B384038006302F8 /* AxesDrawer.swift */,
 				D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */,
 				D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */,
 				D87D6C291B2F0E9A003A2A6F /* Products */,
@@ -239,6 +242,7 @@
 				D88AE4CA1B36082D00D8202B /* GraphView.swift in Sources */,
 				D87D6C2E1B2F0E9A003A2A6F /* AppDelegate.swift in Sources */,
 				D88AE4C81B3607BA00D8202B /* GraphViewController.swift in Sources */,
+				D88C2A011B384038006302F8 /* AxesDrawer.swift in Sources */,
 				D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */,
 				D88AE4CC1B37475E00D8202B /* PowerGraphEngine.swift in Sources */,
 				D81E05AC1B35804F0084D283 /* PowerMeterInfoTableViewController.swift in Sources */,
