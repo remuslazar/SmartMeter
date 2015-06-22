@@ -60,6 +60,14 @@ class PowerMeter: NSObject {
         }
     }
     
+    // calculate the internal RTC value of the power meter, including the current drift
+    func powerMeterRTC() -> NSDate? {
+        if let skew = timeSkew {
+            return NSDate().dateByAddingTimeInterval(skew)
+        }
+        return nil
+    }
+    
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
     func readCurrentWattage(initialSamples: Int = 30, completionHandler: (Int?) -> Void) {
@@ -67,26 +75,33 @@ class PowerMeter: NSObject {
         var numSamples = initialSamples
         
         // calculate how many samples we need from last request
-        if let skew = timeSkew {
-            let powermeterNow = NSDate().dateByAddingTimeInterval(timeSkew!)
-            let count = powermeterNow.timeIntervalSinceDate(lastTimestamp!)
-            numSamples = Int(count) + 3
-//            println("numSamples: \(numSamples)")
+        if let powermeterNow = powerMeterRTC(),
+            let endts = self.history.endts  {
+                let count = powermeterNow.timeIntervalSinceDate(endts)
+                numSamples = Int(count) + 3
         }
         
-        numSamples = min(numSamples,100)
+        var lastts: NSDate?
+        
+        if (numSamples > 1800) {
+            // dont fetch the history for this long period of time. Else, reinit the history
+            history.purge()
+            numSamples = initialSamples
+        } else if (numSamples > 100) {
+            numSamples = 100
+            lastts = history.endts?.dateByAddingTimeInterval(NSTimeInterval(numSamples))
+        }
 
         let requestBeginTimestamp = NSDate()
-        readPowerProfile(numSamples: numSamples, lastts: nil) {
+        readPowerProfile(numSamples: numSamples, lastts: lastts) {
             if let powerProfile = $0 {
-                //println("readCurrentWattage: wattage: \(powerProfile.v.last)W, ts: \(powerProfile.startts)")
                 if let ts = powerProfile.endts {
-//                    println("history endts: \(self.history.endts) startts: \(powerProfile.startts!), endts: \(powerProfile.endts!)")
                     self.history.add(powerProfile)
-                    self.lastTimestamp = ts
-                    self.timeSkew = self.lastTimestamp!.timeIntervalSinceDate(requestBeginTimestamp)
+                    self.timeSkew = ts.timeIntervalSinceDate(requestBeginTimestamp)
                 }
-                completionHandler(powerProfile.v.last)
+                // because when lastts != nil, we know that the last sample
+                // is not the current one. So we return nil
+                completionHandler(lastts == nil ? powerProfile.v.last : nil)
             }
         }
     }
@@ -139,7 +154,6 @@ class PowerMeter: NSObject {
     }
     
     private var lastRequestStillPending = false
-    private var lastTimestamp: NSDate?
 
     // time skew of the power meter device (negative means that the device RTC is late)
     private var timeSkew: NSTimeInterval?
@@ -180,6 +194,11 @@ class PowerMeter: NSObject {
 
         init(size newSize: Int) {
             self.size = newSize
+        }
+        
+        func purge() {
+            data.removeAll(keepCapacity: false)
+            startts = nil
         }
         
         struct PowerSample {
