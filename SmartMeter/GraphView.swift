@@ -30,6 +30,27 @@ class GraphView: UIView {
         return CGFloat(datasource!.graphViewGetMaxY())
     }
     
+    private var dragStartingPoint: CGPoint?
+    var selectedRect: CGRect?
+    
+    func dragSelection(gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .Began:
+            dragStartingPoint = gesture.locationInView(self)
+            selectedRect = nil
+        case .Changed:
+            if dragStartingPoint != nil {
+                let dragEndPoint = gesture.translationInView(self)
+                selectedRect = CGRectStandardize(CGRectMake(dragStartingPoint!.x, dragStartingPoint!.y,
+                    dragEndPoint.x, dragEndPoint.y))
+                setNeedsDisplay()
+            }
+        default:
+            dragStartingPoint = nil
+        }
+
+    }
+    
     override func drawRect(rect: CGRect) {
         if datasource == nil { return }
         if datasource!.graphViewgetSampleCount() < 2 { return }
@@ -68,5 +89,12 @@ class GraphView: UIView {
         {
             axesDrawer.drawAxesInRect(bounds, minX: minX, maxX: maxX, minY: 0, maxY: maxY)
         }
+        
+        if let selection = selectedRect {
+            let rect = UIBezierPath(rect: selection)
+            rect.lineWidth = Constants.lineWidth
+            rect.stroke()
+        }
+        
     }
 }

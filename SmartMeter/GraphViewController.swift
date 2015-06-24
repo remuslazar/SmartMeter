@@ -63,23 +63,7 @@ class GraphViewController: UIViewController {
         }
         
         if delegate != nil && delegate!.shouldCalculateAreaOnPan() {
-            switch gesture.state {
-            case .Began:
-                println("began")
-                State.firstEdge = gesture.translationInView(graphView)
-            case .Changed:
-                println("changed")
-                let secondEdge = gesture.translationInView(graphView)
-                powerGraphEngine?.select(
-                    x1: Double(min(State.firstEdge.x, secondEdge.x)),
-                    x2: Double(max(State.firstEdge.x, secondEdge.x)),
-                    y0: Double(max(State.firstEdge.y, secondEdge.y))
-                )
-                
-            case .Ended:
-                println("ended")
-            default: break
-            }
+            graphView.dragSelection(gesture)
         } else {
             switch gesture.state {
             case .Changed:
