@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="TLY-hP-VOq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="TLY-hP-VOq">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -17,6 +17,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 W" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfp-Al-qA4">
+                                <rect key="frame" x="258" y="271" width="85" height="58"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="48"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="LaG-rt-agh">
+                                <rect key="frame" x="0.0" y="534" width="600" height="2"/>
+                            </progressView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oS9-mD-VHN">
+                                <rect key="frame" x="285" y="72" width="31" height="30"/>
+                                <state key="normal" title="Calc">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="toggleCalc:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wYZ-bQ-sOb"/>
+                                </connections>
+                            </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Drag a selection on the graph" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jie-KA-cWY">
+                                <rect key="frame" x="187" y="76" width="227" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Maq-Fq-MKt">
                                 <rect key="frame" x="0.0" y="64" width="600" height="516"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -24,23 +48,12 @@
                                     <segue destination="XOU-Qc-NWe" kind="embed" identifier="MiniGraph" id="Coj-Ec-38Q"/>
                                 </connections>
                             </containerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 W" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfp-Al-qA4">
-                                <rect key="frame" x="258" y="271" width="85" height="58"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="48"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-04-b5v">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
                                     <barButtonItem title="Pause" id="9sP-Hm-DFy">
                                         <connections>
                                             <action selector="toggleAutoupdate:" destination="BYZ-38-t0r" id="zMg-RW-moq"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem title="Calc" id="hbN-Fm-sSb">
-                                        <connections>
-                                            <action selector="toggleCalc:" destination="BYZ-38-t0r" id="XpL-T9-5Os"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Wbd-GO-Dkq"/>
@@ -52,24 +65,22 @@
                                 </items>
                             </toolbar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X9g-aE-GpX">
-                                <rect key="frame" x="16" y="571" width="568" height="17"/>
+                                <rect key="frame" x="16" y="569" width="568" height="17"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="LaG-rt-agh">
-                                <rect key="frame" x="0.0" y="534" width="600" height="2"/>
-                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Maq-Fq-MKt" secondAttribute="bottom" constant="20" symbolic="YES" id="0PD-WK-ev3"/>
-                            <constraint firstItem="5IY-04-b5v" firstAttribute="top" secondItem="Maq-Fq-MKt" secondAttribute="bottom" constant="-24" id="EAS-JF-VD3"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9g-aE-GpX" secondAttribute="bottom" constant="12" id="Hh7-2P-sZ4"/>
-                            <constraint firstItem="X9g-aE-GpX" firstAttribute="centerX" secondItem="5IY-04-b5v" secondAttribute="centerX" id="KSO-Uo-rcO"/>
+                            <constraint firstItem="X9g-aE-GpX" firstAttribute="centerX" secondItem="5IY-04-b5v" secondAttribute="centerX" id="12W-uC-vQf"/>
+                            <constraint firstItem="jie-KA-cWY" firstAttribute="centerX" secondItem="oS9-mD-VHN" secondAttribute="centerX" id="90N-eH-qx3"/>
+                            <constraint firstItem="oS9-mD-VHN" firstAttribute="centerX" secondItem="Pfp-Al-qA4" secondAttribute="centerX" id="CeG-ny-6aQ"/>
+                            <constraint firstItem="oS9-mD-VHN" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="M5y-vS-d1p"/>
                             <constraint firstItem="5IY-04-b5v" firstAttribute="trailing" secondItem="Maq-Fq-MKt" secondAttribute="trailing" id="O2L-HQ-peu"/>
+                            <constraint firstItem="X9g-aE-GpX" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="QjE-en-OAe"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Wq6-JI-muY"/>
-                            <constraint firstItem="X9g-aE-GpX" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="XBc-PK-vMf"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="a4P-IX-sjz"/>
                             <constraint firstItem="LaG-rt-agh" firstAttribute="trailing" secondItem="5IY-04-b5v" secondAttribute="trailing" id="ew1-fK-uIB"/>
                             <constraint firstItem="Maq-Fq-MKt" firstAttribute="centerX" secondItem="Pfp-Al-qA4" secondAttribute="centerX" id="hW5-YM-lxu"/>
@@ -79,6 +90,8 @@
                             <constraint firstItem="5IY-04-b5v" firstAttribute="leading" secondItem="Maq-Fq-MKt" secondAttribute="leading" id="qiQ-vY-w1d"/>
                             <constraint firstItem="LaG-rt-agh" firstAttribute="leading" secondItem="5IY-04-b5v" secondAttribute="leading" id="scy-8f-zem"/>
                             <constraint firstItem="Pfp-Al-qA4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wKE-0M-s4X"/>
+                            <constraint firstItem="jie-KA-cWY" firstAttribute="baseline" secondItem="oS9-mD-VHN" secondAttribute="baseline" id="x3b-VH-MaL"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9g-aE-GpX" secondAttribute="bottom" constant="14" id="z9R-iU-urb"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
@@ -96,6 +109,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="calcButton" destination="oS9-mD-VHN" id="JVe-2E-IzF"/>
+                        <outlet property="dragSelectionHelpTextLabel" destination="jie-KA-cWY" id="9Aj-cd-XcS"/>
                         <outlet property="pauseButton" destination="9sP-Hm-DFy" id="C2f-eq-JrV"/>
                         <outlet property="progressBar" destination="LaG-rt-agh" id="zbe-rI-HhV"/>
                         <outlet property="statusBottomLabel" destination="X9g-aE-GpX" id="BSn-QD-ovf"/>
@@ -123,7 +138,7 @@
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AET-ep-wya">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JRB-UJ-GgH">
@@ -165,7 +180,7 @@
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Hostname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="X2w-iu-qK7">
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Dxl-hG-jjK">
@@ -189,7 +204,7 @@
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eUX-hu-P6h">
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jcv-an-xNb">
@@ -209,7 +224,7 @@
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Model Number" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uMI-dm-nFh">
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qnu-fY-I9a">
@@ -229,7 +244,7 @@
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Serial Number" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e4Y-Gc-kMk">
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xhv-fP-JX5">

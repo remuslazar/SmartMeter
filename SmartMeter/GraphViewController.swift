@@ -8,16 +8,12 @@
 
 import UIKit
 
-protocol GraphViewDelegate {
-    func shouldCalculateAreaOnPan() -> Bool
-}
-
 class GraphViewController: UIViewController {
 
     // MARK: - Public API
     func updateGraph() { graphView.setNeedsDisplay() }
     
-    var delegate: GraphViewDelegate?
+    var calculateAreaOnPanMode = false
     
     // our model
     var history: PowerMeter.History! {
@@ -62,7 +58,7 @@ class GraphViewController: UIViewController {
             static var firstEdge = CGPointZero
         }
         
-        if delegate != nil && delegate!.shouldCalculateAreaOnPan() {
+        if calculateAreaOnPanMode {
             graphView.dragSelection(gesture)
         } else {
             switch gesture.state {

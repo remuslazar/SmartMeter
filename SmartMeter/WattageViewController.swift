@@ -19,7 +19,7 @@ private struct Storyboard {
     static let GraphViewSegueIdentifier = "MiniGraph"
 }
 
-class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDelegate {
+class WattageViewController: UIViewController, PowerMeterDelegate {
     
     private struct Labels {
         static let ActionSheetTitle = "Load Historical Data"
@@ -32,34 +32,42 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
                 powerMeter?.startUpdatingCurrentWattage()
                 pauseButton.title = "Pause"
                 wattageLabel.hidden = false
+                calcButton.hidden = true
             } else {
                 powerMeter?.stopUpdatingCurrentWattage()
                 pauseButton.title = "Resume"
                 wattageLabel.hidden = true
+                calcButton.hidden = false
             }
         }
     }
+
+    weak var graphVC: GraphViewController?
     
     // MARK: - Outlets
     @IBOutlet weak var wattageLabel: UILabel!
     @IBOutlet weak var statusBottomLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     @IBOutlet weak var pauseButton: UIBarButtonItem!
+    @IBOutlet weak var calcButton: UIButton!
+    @IBOutlet weak var dragSelectionHelpTextLabel: UILabel!
     
     @IBAction func toggleAutoupdate(sender: UIBarButtonItem) {
         autoUpdate = !autoUpdate
     }
     
-    private var integrateArea = false
-
-    func shouldCalculateAreaOnPan() -> Bool {
-        return integrateArea
+    private var dragAreaOnPanModeActive = false {
+        didSet {
+            calcButton.hidden = dragAreaOnPanModeActive
+            calcButton.hidden = dragAreaOnPanModeActive
+            dragSelectionHelpTextLabel.hidden = !dragAreaOnPanModeActive
+            pauseButton.enabled = !dragAreaOnPanModeActive
+            graphVC?.calculateAreaOnPanMode = dragAreaOnPanModeActive
+        }
     }
-    
-    @IBAction func toggleCalc(sender: AnyObject) {
-        integrateArea = !integrateArea
-        autoUpdate = !integrateArea
-        pauseButton.enabled = !integrateArea
+
+    @IBAction func toggleCalc(sender: UIButton) {
+        dragAreaOnPanModeActive = !dragAreaOnPanModeActive
     }
     
     @IBAction func showActionsheet(sender: AnyObject) {
@@ -110,7 +118,6 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         })
     }
     
-    weak var graphVC: GraphViewController?
     
     // MARK: - Private data and methods
     private var powerMeter: PowerMeter?
@@ -196,7 +203,6 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         case Storyboard.GraphViewSegueIdentifier:
             if let vc = segue.destinationViewController as? GraphViewController {
                 self.graphVC = vc
-                vc.delegate = self
             }
             
         default: break
