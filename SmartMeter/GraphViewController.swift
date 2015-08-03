@@ -13,7 +13,11 @@ class GraphViewController: UIViewController {
     // MARK: - Public API
     func updateGraph() { graphView.setNeedsDisplay() }
     
-    var calculateAreaOnPanMode = false
+    var calculateAreaOnPanMode = false {
+        didSet {
+            graphView.calculateAreaMode = calculateAreaOnPanMode
+        }
+    }
     
     // our model
     var history: PowerMeter.History! {
@@ -52,30 +56,27 @@ class GraphViewController: UIViewController {
         }
     }
     
+    
     func pan(gesture: UIPanGestureRecognizer) {
         
         struct State {
             static var firstEdge = CGPointZero
         }
         
-        if calculateAreaOnPanMode {
-            graphView.dragSelection(gesture)
-        } else {
-            switch gesture.state {
-            case .Changed:
-                if powerGraphEngine != nil {
-                    let translation = gesture.translationInView(graphView)
-                    let samplesPerPoint = CGFloat(powerGraphEngine!.graphViewgetSampleCount()) / graphView.bounds.width
-                    powerGraphEngine?.offsetX -= Double(translation.x * samplesPerPoint)
-                    gesture.setTranslation(CGPointZero, inView: graphView)
-                    graphView.setNeedsDisplay()
-                }
-            default: break
+        switch gesture.state {
+        case .Changed:
+            if powerGraphEngine != nil {
+                let translation = gesture.translationInView(graphView)
+                let samplesPerPoint = CGFloat(powerGraphEngine!.graphViewgetSampleCount()) / graphView.bounds.width
+                powerGraphEngine?.offsetX -= Double(translation.x * samplesPerPoint)
+                gesture.setTranslation(CGPointZero, inView: graphView)
+                graphView.setNeedsDisplay()
             }
+        default: break
         }
-        
-    }
     
+    }
+
     func zoom(gesture: UIPinchGestureRecognizer) {
         
         func constrain(input: CGFloat) -> CGFloat {
