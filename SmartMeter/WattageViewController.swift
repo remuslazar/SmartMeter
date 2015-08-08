@@ -69,6 +69,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         case liveView
         case paused
         case dragArea
+        case loadingHistory
     }
     
     private var state = UIState.liveView {
@@ -94,6 +95,12 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
                 calcButton.enabled = false
                 graphVC.calculateAreaOnPanMode = true
                 statusBottomLabel.text = "Drag on the graph to select an area"
+                autoUpdate = false
+                
+            case .loadingHistory:
+                pauseButton.enabled = false
+                playButton.enabled = false
+                calcButton.enabled = false
                 autoUpdate = false
             }
         }
@@ -131,17 +138,14 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
 
     // load historical data from the power meter
     private func loadHistory(timespan: NSTimeInterval = 300) {
+        state = .loadingHistory
         self.progressBar.progress = 0
         self.progressBar.hidden = false
-        let autoUpdateState = autoUpdate
-        autoUpdate = false
-        pauseButton.enabled = false
         powerMeter?.readSamples(Int(timespan), completionHandler: { (remaining) -> Void in
             self.progressBar.progress = Float(Int(timespan) - remaining) / Float(timespan)
             if (remaining <= 0) {
                 self.progressBar.hidden = true
-                self.autoUpdate = autoUpdateState
-                self.pauseButton.enabled = true
+                self.state = .liveView
             }
             self.updateUI()
         })
