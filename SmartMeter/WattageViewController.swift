@@ -44,7 +44,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         formatter.maximumFractionDigits = 1
         if let powerAvgText = formatter.stringFromNumber(NSNumber(double: powerAvg)),
             let energyText = formatter.stringFromNumber(NSNumber(double: energy)) {
-            statusBottomLabel.text = "\(powerAvgText)W, \(energyText)"
+            statusBottomLabel.text = "\(powerAvgText)W, \(energyText)Wh"
         }
     }
     
@@ -161,11 +161,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     }
     
     private func updateUI() {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
         if let hist = powerMeter?.history where hist.startts != nil {
-            statusBottomLabel.text = "\(hist.count) Samples, \(dateFormatter.stringFromDate(hist.startts!)) - \(dateFormatter.stringFromDate(hist.endts!))"
+            statusBottomLabel.text = "\(hist.count) Samples"
         } else {
             statusBottomLabel.text = nil
         }
