@@ -19,7 +19,7 @@ private struct Storyboard {
     static let GraphViewSegueIdentifier = "MiniGraph"
 }
 
-class WattageViewController: UIViewController, PowerMeterDelegate {
+class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDelegate {
     
     private struct Labels {
         static let ActionSheetTitle = "Load Historical Data"
@@ -30,44 +30,73 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
         didSet {
             if autoUpdate {
                 powerMeter?.startUpdatingCurrentWattage()
-                pauseButton.title = "Pause"
                 wattageLabel.hidden = false
-                calcButton.hidden = true
             } else {
                 powerMeter?.stopUpdatingCurrentWattage()
-                pauseButton.title = "Resume"
                 wattageLabel.hidden = true
-                calcButton.hidden = false
             }
         }
     }
 
-    weak var graphVC: GraphViewController?
+    func graphViewDidUpdateDraggedArea(#powerAvg: Double, timespan: Double) {
+        let energy = powerAvg * timespan / 3600 // Wh
+        let formatter = NSNumberFormatter()
+        formatter.maximumFractionDigits = 1
+        if let powerAvgText = formatter.stringFromNumber(NSNumber(double: powerAvg)),
+            let energyText = formatter.stringFromNumber(NSNumber(double: energy)) {
+            statusBottomLabel.text = "\(powerAvgText)W, \(energyText)"
+        }
+    }
+    
+    // embedded GraphViewController
+    weak var graphVC: GraphViewController!
     
     // MARK: - Outlets
     @IBOutlet weak var wattageLabel: UILabel!
     @IBOutlet weak var statusBottomLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
+    
+    // MARK: - Bar Buttons
     @IBOutlet weak var pauseButton: UIBarButtonItem!
-    @IBOutlet weak var calcButton: UIButton!
-    @IBOutlet weak var dragSelectionHelpTextLabel: UILabel!
+    @IBOutlet weak var playButton: UIBarButtonItem!
+    @IBOutlet weak var calcButton: UIBarButtonItem!
     
-    @IBAction func toggleAutoupdate(sender: UIBarButtonItem) {
-        autoUpdate = !autoUpdate
+    @IBAction func pause(sender: AnyObject) { state = .paused }
+    @IBAction func play(sender: AnyObject) { state = .liveView }
+    @IBAction func calc(sender: AnyObject) { state = .dragArea }
+    
+    private enum UIState {
+        case liveView
+        case paused
+        case dragArea
     }
     
-    private var dragAreaOnPanModeActive = false {
+    private var state = UIState.liveView {
         didSet {
-            calcButton.hidden = dragAreaOnPanModeActive
-            calcButton.hidden = dragAreaOnPanModeActive
-            dragSelectionHelpTextLabel.hidden = !dragAreaOnPanModeActive
-            pauseButton.enabled = !dragAreaOnPanModeActive
-            graphVC?.calculateAreaOnPanMode = dragAreaOnPanModeActive
+            switch state {
+            case .liveView:
+                pauseButton.enabled = true
+                playButton.enabled = false
+                calcButton.enabled = true
+                graphVC.calculateAreaOnPanMode = false
+                autoUpdate = true
+                
+            case .paused:
+                pauseButton.enabled = false
+                playButton.enabled = true
+                calcButton.enabled = true
+                graphVC.calculateAreaOnPanMode = false
+                autoUpdate = false
+                
+            case .dragArea:
+                pauseButton.enabled = true
+                playButton.enabled = true
+                calcButton.enabled = false
+                graphVC.calculateAreaOnPanMode = true
+                statusBottomLabel.text = "Drag on the graph to select an area"
+                autoUpdate = false
+            }
         }
-    }
-
-    @IBAction func toggleCalc(sender: UIButton) {
-        dragAreaOnPanModeActive = !dragAreaOnPanModeActive
     }
     
     @IBAction func showActionsheet(sender: AnyObject) {
@@ -184,6 +213,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate {
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
         updateUI()
+        graphVC.graphView.delegate = self
     }
    
     // MARK: - Segue

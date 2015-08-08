@@ -15,7 +15,7 @@ protocol GraphViewDatasource {
 }
 
 protocol GraphViewDelegate {
-    func graphViewDidUpdateDraggedArea(energyInWattHour: Double)
+    func graphViewDidUpdateDraggedArea(#powerAvg: Double, timespan: Double)
 }
 
 class GraphView: UIView {
@@ -109,10 +109,7 @@ class GraphView: UIView {
                     let ts1 = datasource.graphViewgetSample(x1, resample: 1)?.timestamp {
                         powerAvg /= Double(x1-x0)
                         let deltaT = Double(ts1.timeIntervalSinceDate(ts0))
-                        let energy = powerAvg * deltaT / 3600
-                        
-                        println("Power: \(powerAvg) W")
-                        println("Energy: \(energy) Wh")
+                        delegate?.graphViewDidUpdateDraggedArea(powerAvg: powerAvg, timespan: deltaT)
                 }
             }
         }
