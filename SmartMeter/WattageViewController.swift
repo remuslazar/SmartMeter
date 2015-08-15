@@ -11,6 +11,7 @@ import UIKit
 struct UserDefaults {
     static let SmartmeterHostname = "smartmeter_hostname"
     static let SmartmeterRefreshRate = "smartmeter_refresh_rate"
+    static let SmartmeterPricePerKWh = "smartmeter_price_kwh"
 }
 
 private struct Storyboard {
@@ -20,6 +21,12 @@ private struct Storyboard {
 }
 
 class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDelegate {
+    
+    private lazy var currencyFormatter: NSNumberFormatter = {
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = .CurrencyStyle
+        return formatter
+    }()
     
     private struct Labels {
         static let ActionSheetTitle = "Load Historical Data"
@@ -44,7 +51,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         formatter.maximumFractionDigits = 1
         if let powerAvgText = formatter.stringFromNumber(NSNumber(double: powerAvg)),
             let energyText = formatter.stringFromNumber(NSNumber(double: energy)) {
-            statusBottomLabel.text = "\(powerAvgText)W, \(energyText)Wh"
+                statusBottomLabel.text = "\(powerAvgText)W, \(energyText)Wh"
+                if pricePerKWh > 0 {
+                    statusBottomLabel.text! +=
+                    " (\(currencyFormatter.stringFromNumber(NSNumber(double: pricePerKWh * energy / 1000))!))"
+                }
         }
     }
     
@@ -173,6 +184,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         graphVC?.updateGraph()
     }
     
+    private var pricePerKWh = 0.0 // in the local currency
+    
     func readUserDefaults() {
         println("(re)reading user defaults and init")
         if let hostname = NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) as? String {
@@ -180,6 +193,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         }
         if let updateInterval = NSUserDefaults().valueForKey(UserDefaults.SmartmeterRefreshRate) as? Double {
             powerMeter?.autoUpdateTimeInterval = NSTimeInterval(updateInterval)
+        }
+        if let priceString = NSUserDefaults().valueForKey(UserDefaults.SmartmeterPricePerKWh) as? String {
+            if let price = NSNumberFormatter().numberFromString(priceString) {
+                pricePerKWh = price.doubleValue / 100 // cents
+            }
         }
     }
     

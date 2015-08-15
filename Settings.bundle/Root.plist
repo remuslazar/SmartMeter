@@ -30,7 +30,7 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Refresh Rate</string>
+			<string>UI Refresh Rate</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -49,6 +49,28 @@
 			<string></string>
 			<key>Type</key>
 			<string>PSSliderSpecifier</string>
+		</dict>
+        <dict>
+            <key>Title</key>
+            <string>Price Settings</string>
+            <key>Type</key>
+            <string>PSGroupSpecifier</string>
+        </dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>30</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Price of kWh in Cent</string>
+			<key>Key</key>
+			<string>smartmeter_price_kwh</string>
+			<key>KeyboardType</key>
+			<string>NumberPad</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
 		</dict>
 	</array>
 	<key>StringsTable</key>
