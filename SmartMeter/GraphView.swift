@@ -53,7 +53,7 @@ class GraphView: UIView {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
-        if let touch = touches.first as? UITouch {
+        if let touch = touches.first {
             dragStartingPoint = touch.locationInView(self)
             selectedRect = nil
             setNeedsDisplay()
@@ -67,7 +67,7 @@ class GraphView: UIView {
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
-        if let touch = touches.first as? UITouch {
+        if let touch = touches.first {
             if dragStartingPoint != nil {
                 let dragEndPoint = touch.locationInView(self)
                 selectedRect = CGRectStandardize(CGRectMake(
@@ -95,7 +95,6 @@ class GraphView: UIView {
             let xScaleFactor: CGFloat = bounds.width / CGFloat(datasource.graphViewgetSampleCount()-1)
             let x0 = Int(selection.minX / xScaleFactor)
             let x1 = Int(selection.maxX / xScaleFactor)
-            let y0 = selection.maxY
             var powerAvg = 0.0
             if x1 > x0 {
                 let minY = yValueForYCoodrdinate(selection.maxY)

@@ -50,12 +50,12 @@
 			<key>Type</key>
 			<string>PSSliderSpecifier</string>
 		</dict>
-        <dict>
-            <key>Title</key>
-            <string>Price Settings</string>
-            <key>Type</key>
-            <string>PSGroupSpecifier</string>
-        </dict>
+		<dict>
+			<key>Title</key>
+			<string>Price Settings</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
 		<dict>
 			<key>DefaultValue</key>
 			<string>30</string>
@@ -73,7 +73,5 @@
 			<string>None</string>
 		</dict>
 	</array>
-	<key>StringsTable</key>
-	<string>Root</string>
 </dict>
 </plist>

@@ -258,7 +258,7 @@ class PowerMeter: NSObject {
         }
         
         func prepend(powerProfile: PowerProfile) {
-            data.insertContentsOf(powerProfile.v.map({ $0 }), atIndex: 0)
+            data.insertContentsOf(powerProfile.v.map({ $0 }), at: 0)
             startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-powerProfile.v.count))
             trim()
         }
@@ -318,7 +318,7 @@ class PowerProfile : PowerMeterXMLData {
     }
     
     private struct Constants {
-        static let timestampFormatString = "yyMMddHHmmss's'"
+        static let timestampFormatString = "yyMMddHHmmss"
     }
     
     class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
@@ -342,7 +342,7 @@ class PowerProfile : PowerMeterXMLData {
                 v.append(value)
             }
 //        case "startts": if inHeader { startts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
-        case "endts": if inHeader { endts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
+        case "endts": if inHeader { endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast())) }
         default: break
         }
     }
@@ -362,7 +362,7 @@ class PowerProfile : PowerMeterXMLData {
 
 }
 
-class PowerMeterXMLData : NSObject, CustomStringConvertible, NSXMLParserDelegate {
+class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
     
     typealias PowerMeterXMLDataCompletionHandler = (PowerMeterXMLData?) -> Void
     private let completionHandler: PowerMeterXMLDataCompletionHandler
@@ -410,7 +410,8 @@ class PowerMeterXMLData : NSObject, CustomStringConvertible, NSXMLParserDelegate
     func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) { fail() }
     func parser(parser: NSXMLParser, validationErrorOccurred validationError: NSError) { fail() }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String?) {
-        input += string!
+    func parser(parser: NSXMLParser, foundCharacters string: String) {
+        input += string
     }
+    
 }
