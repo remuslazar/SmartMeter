@@ -201,6 +201,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         }
     }
     
+    func didEnterBackground() {
+        print("autoUpdate disabled while running in background")
+        state = .paused
+    }
+
     // MARK: - PowerMeterDelegate
     func didUpdateWattage(currentWattage: Int) {
         self.wattageLabel.text = "\(currentWattage) W"
@@ -218,10 +223,9 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         
         autoUpdate = true
     }
-
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        autoUpdate = false
     }
     
     override func viewDidLoad() {
@@ -231,6 +235,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaults"),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didEnterBackground"),
+            name: UIApplicationDidEnterBackgroundNotification, object: nil)
         updateUI()
         graphVC.graphView.delegate = self
     }
