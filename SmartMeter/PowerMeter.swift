@@ -170,7 +170,7 @@ class PowerMeter: NSObject {
     }
     
     // generic function to read a specific power profile from the power meter
-    private func readPowerProfile(#numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?) -> Void) {
+    private func readPowerProfile(numSamples numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?) -> Void) {
         if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html"),
             let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
         {
@@ -258,7 +258,7 @@ class PowerMeter: NSObject {
         }
         
         func prepend(powerProfile: PowerProfile) {
-            data.splice(powerProfile.v.map({ $0 }), atIndex: 0)
+            data.insertContentsOf(powerProfile.v.map({ $0 }), atIndex: 0)
             startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-powerProfile.v.count))
             trim()
         }
@@ -271,7 +271,7 @@ class PowerMeter: NSObject {
                 var offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
                 //println("offset: \(offset), powerProfile.startts: \(powerProfile.startts!), endts: \(endts!)")
                 if (offset > 0) {
-                    println("\(offset) nil values")
+                    print("\(offset) nil values")
                     for _ in 1...Int(offset) { data.append(nil) }
                     offset = 0
                 }
@@ -362,7 +362,7 @@ class PowerProfile : PowerMeterXMLData {
 
 }
 
-class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
+class PowerMeterXMLData : NSObject, CustomStringConvertible, NSXMLParserDelegate {
     
     typealias PowerMeterXMLDataCompletionHandler = (PowerMeterXMLData?) -> Void
     private let completionHandler: PowerMeterXMLDataCompletionHandler
@@ -375,7 +375,7 @@ class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
     private let url: NSURL
     
     private func parse() {
-        let qos = Int(QOS_CLASS_USER_INITIATED.value)
+        let qos = Int(QOS_CLASS_USER_INITIATED.rawValue)
         dispatch_async(dispatch_get_global_queue(qos, 0)) {
             if let data = NSData(contentsOfURL: self.url) {
                 let parser = NSXMLParser(data: data)
@@ -398,7 +398,7 @@ class PowerMeterXMLData : NSObject, Printable, NSXMLParserDelegate {
     private func fail() { complete(success: false) }
     private func succeed() { complete(success: true) }
 
-    private func complete(#success: Bool) {
+    private func complete(success success: Bool) {
         dispatch_async(dispatch_get_main_queue()) {
             self.completionHandler(success ? self : nil)
         }

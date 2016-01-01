@@ -26,7 +26,7 @@ class AxesDrawer: UIView {
             NSForegroundColorAttributeName : Constants.LegendColor
         ]
 
-        var textRect = CGRect(origin: point, size: text.sizeWithAttributes(attributes))
+        let textRect = CGRect(origin: point, size: text.sizeWithAttributes(attributes))
         text.drawInRect(textRect, withAttributes: attributes)
     }
     
@@ -57,7 +57,7 @@ class AxesDrawer: UIView {
         formatter.dateStyle = NSDateFormatterStyle.NoStyle
         formatter.timeStyle = NSDateFormatterStyle.ShortStyle
         
-        let seconds = NSCalendar.currentCalendar().component(.CalendarUnitSecond, fromDate: minX)
+        let seconds = NSCalendar.currentCalendar().component(.Second, fromDate: minX)
         
         for var xValue: CGFloat = 60.0 - CGFloat(seconds) ; xValue < CGFloat(timeInterval) ; xValue += stepValue {
             let x = xValue / CGFloat(timeInterval) * bounds.width

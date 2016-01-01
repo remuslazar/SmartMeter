@@ -45,7 +45,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         }
     }
 
-    func graphViewDidUpdateDraggedArea(#powerAvg: Double, timespan: Double) {
+    func graphViewDidUpdateDraggedArea(powerAvg powerAvg: Double, timespan: Double) {
         let energy = powerAvg * timespan / 3600 // Wh
         let formatter = NSNumberFormatter()
         formatter.maximumFractionDigits = 1
@@ -127,7 +127,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
             for timespan in [5,15,60,120] {
                 sheet.addAction(UIAlertAction(title: "\(timespan) minutes (\(timespan * 60) samples)",
                     style: .Default, handler: { (_) in
-                        self.loadHistory(timespan: NSTimeInterval(timespan * 60))
+                        self.loadHistory(NSTimeInterval(timespan * 60))
                 }))
             }
             sheet.addAction(UIAlertAction(title: "Reset local history",
@@ -187,7 +187,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     private var pricePerKWh = 0.0 // in the local currency
     
     func readUserDefaults() {
-        println("(re)reading user defaults and init")
+        print("(re)reading user defaults and init")
         if let hostname = NSUserDefaults().valueForKey(UserDefaults.SmartmeterHostname) as? String {
             smartMeterHostname = hostname
         }

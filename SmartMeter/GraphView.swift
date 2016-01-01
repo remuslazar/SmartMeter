@@ -15,7 +15,7 @@ protocol GraphViewDatasource {
 }
 
 protocol GraphViewDelegate {
-    func graphViewDidUpdateDraggedArea(#powerAvg: Double, timespan: Double)
+    func graphViewDidUpdateDraggedArea(powerAvg powerAvg: Double, timespan: Double)
 }
 
 class GraphView: UIView {
@@ -51,7 +51,7 @@ class GraphView: UIView {
     private var dragStartingPoint: CGPoint?
     var selectedRect: CGRect?
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
         if let touch = touches.first as? UITouch {
             dragStartingPoint = touch.locationInView(self)
@@ -60,12 +60,12 @@ class GraphView: UIView {
         }
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
         dragStartingPoint = nil
     }
     
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
         if let touch = touches.first as? UITouch {
             if dragStartingPoint != nil {
@@ -80,7 +80,7 @@ class GraphView: UIView {
         }
     }
     
-    override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         if !calculateAreaMode { return }
         selectedRect = nil
     }
