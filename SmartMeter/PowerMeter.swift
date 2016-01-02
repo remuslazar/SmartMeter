@@ -47,15 +47,17 @@ class PowerMeter: NSObject {
     // read the device info from the power meter asynchronously
     // will call the callback in the main queue
     func readDeviceInfo(completionHandler: ([String: String]?) -> Void) {
-        if let url = NSURL(scheme: "http", host: host, path: "/wikidesc.xml") {
-            PowerMeterDeviceInfo.parse(url) {
-                if let deviceInfo = $0 as? PowerMeterDeviceInfo {
-                    //println("readDeviceInfo: \(deviceInfo)")
-                    completionHandler(deviceInfo.info)
-                }
+        let u = NSURLComponents()
+        u.scheme = "http"
+        u.host = host
+        u.path = "/wikidesc.xml"
+        PowerMeterDeviceInfo.parse(u.URL!) {
+            if let deviceInfo = $0 as? PowerMeterDeviceInfo {
+                //println("readDeviceInfo: \(deviceInfo)")
+                completionHandler(deviceInfo.info)
+            } else {
+                completionHandler(nil)
             }
-        } else {
-            completionHandler(nil)
         }
     }
     
@@ -120,8 +122,8 @@ class PowerMeter: NSObject {
                     self.timeSkew = ts.timeIntervalSinceDate(requestBeginTimestamp)
                 }
                 // because when lastts != nil, we know that the last sample
-                // is not the current one. So we return nil
-                completionHandler(lastts == nil ? powerProfile.v.last : nil)
+                // is not the current one. So we do not call the completion handler then.
+                if (lastts == nil) { completionHandler(powerProfile.v.last) }
             } else {
                 completionHandler(nil)
             }
@@ -180,19 +182,19 @@ class PowerMeter: NSObject {
     
     // generic function to read a specific power profile from the power meter
     private func readPowerProfile(numSamples numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?) -> Void) {
-        if let url = NSURL(scheme: "http", host: host, path: "/InstantView/request/getPowerProfile.html"),
-            let u = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
-        {
-            u.queryItems = [
-                NSURLQueryItem(name: "ts", value: PowerProfile.timestampFromDate(lastts)),
-                NSURLQueryItem(name: "n", value: "\(numSamples)")
-            ]
-            PowerProfile.parse(u.URL!) {
-                if let powerProfile = $0 as? PowerProfile {
-                    completionHandler(powerProfile)
-                } else {
-                    completionHandler(nil)
-                }
+        let u = NSURLComponents()
+        u.scheme = "http"
+        u.host = host
+        u.path = "/InstantView/request/getPowerProfile.html"
+        u.queryItems = [
+            NSURLQueryItem(name: "ts", value: PowerProfile.timestampFromDate(lastts)),
+            NSURLQueryItem(name: "n", value: "\(numSamples)")
+        ]
+        PowerProfile.parse(u.URL!) {
+            if let powerProfile = $0 as? PowerProfile {
+                completionHandler(powerProfile)
+            } else {
+                completionHandler(nil)
             }
         }
     }
