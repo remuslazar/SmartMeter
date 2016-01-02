@@ -314,20 +314,27 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 
 class PowerProfile : PowerMeterXMLData {
 
-    var v = [Int]()
-    var endts: NSDate?
-
-    var startts: NSDate? {
-        return endts?.dateByAddingTimeInterval(NSTimeInterval(-(v.count-1)))
-    }
-    
+    // MARK: - Constants
     private struct Constants {
         static let timestampFormatString = "yyMMddHHmmss"
     }
+
+    // MARK: - Public API
     
     class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
         PowerProfile(url: url, completionHandler: completionHandler).parse()
     }
+
+    // data store, all values are Int's
+    var v = [Int]()
+    
+    // start and end timestamps
+    var endts: NSDate?
+    var startts: NSDate? { // computed property
+        return endts?.dateByAddingTimeInterval(NSTimeInterval(-(v.count-1)))
+    }
+    
+    // MARK: - NSXMLParser Delegate
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
         attributes attributeDict: [NSObject : AnyObject]) {
@@ -353,13 +360,15 @@ class PowerProfile : PowerMeterXMLData {
         }
     }
     
-    static let powerMeterDateFormatter: NSDateFormatter = {
+    // MARK: - private data
+    
+    private static let powerMeterDateFormatter: NSDateFormatter = {
         var formatter = NSDateFormatter()
         formatter.dateFormat = Constants.timestampFormatString
         return formatter
     }()
     
-    class func timestampFromDate(date: NSDate?) -> String {
+    private class func timestampFromDate(date: NSDate?) -> String {
         if let date = date {
             return powerMeterDateFormatter.stringFromDate(date)
         }
@@ -368,6 +377,7 @@ class PowerProfile : PowerMeterXMLData {
 
 }
 
+// Base class for xml based powermeter data, both PowerProfile and PowerMeterDeviceInfo classes do inherit from this base class
 class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
     
     typealias PowerMeterXMLDataCompletionHandler = (PowerMeterXMLData?) -> Void
