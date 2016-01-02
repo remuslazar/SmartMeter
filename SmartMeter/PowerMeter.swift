@@ -348,14 +348,12 @@ class PowerProfile : PowerMeterXMLData {
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         switch elementName {
         case "header": inHeader = false
-        case "v":
-            if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
+        case "v" where !inHeader:
+            if let value = NSNumberFormatter().numberFromString(input)?.integerValue {
                 v.append(value)
             }
-        case "endts":
-            if inHeader {
-                endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast()))
-            }
+        case "endts" where inHeader:
+            endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast()))
         default: break
         }
     }
