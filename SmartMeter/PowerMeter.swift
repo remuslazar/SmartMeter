@@ -413,9 +413,5 @@ class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
     func parserDidEndDocument(parser: NSXMLParser) { succeed() }
     func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) { fail() }
     func parser(parser: NSXMLParser, validationErrorOccurred validationError: NSError) { fail() }
-    
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
-        input += string
-    }
-    
+    func parser(parser: NSXMLParser, foundCharacters string: String) { input += string }
 }
