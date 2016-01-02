@@ -11,6 +11,7 @@ import Foundation
 protocol PowerMeterDelegate {
     // will be called on the main queue
     func didUpdateWattage(currentWattage: Int)
+    func powerMeterUpdateWattageDidFail()
 }
 
 class PowerMeter: NSObject {
@@ -121,6 +122,8 @@ class PowerMeter: NSObject {
                 // because when lastts != nil, we know that the last sample
                 // is not the current one. So we return nil
                 completionHandler(lastts == nil ? powerProfile.v.last : nil)
+            } else {
+                completionHandler(nil)
             }
         }
     }
@@ -169,6 +172,8 @@ class PowerMeter: NSObject {
             self.lastRequestStillPending = false
             if let value = $0 {
                 self.delegate?.didUpdateWattage(value)
+            } else {
+                self.delegate?.powerMeterUpdateWattageDidFail()
             }
         }
     }
@@ -185,10 +190,10 @@ class PowerMeter: NSObject {
             PowerProfile.parse(u.URL!) {
                 if let powerProfile = $0 as? PowerProfile {
                     completionHandler(powerProfile)
+                } else {
+                    completionHandler(nil)
                 }
             }
-        } else {
-            completionHandler(nil)
         }
     }
     
@@ -314,17 +319,8 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 
 class PowerProfile : PowerMeterXMLData {
 
-    // MARK: - Constants
-    private struct Constants {
-        static let timestampFormatString = "yyMMddHHmmss"
-    }
-
     // MARK: - Public API
     
-    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
-        PowerProfile(url: url, completionHandler: completionHandler).parse()
-    }
-
     // data store, all values are Int's
     var v = [Int]()
     
@@ -334,7 +330,16 @@ class PowerProfile : PowerMeterXMLData {
         return endts?.dateByAddingTimeInterval(NSTimeInterval(-(v.count-1)))
     }
     
+    // MARK: - Constants
+    private struct Constants {
+        static let timestampFormatString = "yyMMddHHmmss"
+    }
+    
     // MARK: - NSXMLParser Delegate
+    
+    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+        PowerProfile(url: url, completionHandler: completionHandler).parse()
+    }
     
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
         attributes attributeDict: [NSObject : AnyObject]) {
@@ -387,18 +392,23 @@ class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
     }
     
     private let url: NSURL
+    private var lastError: ErrorType!
     
     private func parse() {
         let qos = Int(QOS_CLASS_USER_INITIATED.rawValue)
         dispatch_async(dispatch_get_global_queue(qos, 0)) {
-            if let data = NSData(contentsOfURL: self.url) {
+            do {
+                let data = try NSData(contentsOfURL: self.url, options: NSDataReadingOptions.UncachedRead)
+                self.lastError = nil
                 let parser = NSXMLParser(data: data)
                 parser.delegate = self
                 parser.shouldProcessNamespaces = false
                 parser.shouldReportNamespacePrefixes = false
                 parser.shouldResolveExternalEntities = false
                 parser.parse()
-            } else {
+            } catch {
+                print("error while reading from the power meter: \(error)")
+                self.lastError = error
                 self.fail()
             }
         }

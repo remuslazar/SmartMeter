@@ -211,6 +211,14 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         self.wattageLabel.text = "\(currentWattage) W"
         updateUI()
     }
+    
+    func powerMeterUpdateWattageDidFail() {
+        let alert = UIAlertController(title: "Network Error",
+            message: "The PowerMeter device (Hostname: \(self.powerMeter?.host)) cannot be accessed over the Network. Check your settings or connectivity.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
+        state = .paused
+    }
 
     // MARK: - ViewController Lifetime
     override func viewDidAppear(animated: Bool) {
