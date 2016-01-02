@@ -13,7 +13,6 @@
 		D87D6C331B2F0E9A003A2A6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C311B2F0E9A003A2A6F /* Main.storyboard */; };
 		D87D6C351B2F0E9A003A2A6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C341B2F0E9A003A2A6F /* Images.xcassets */; };
 		D87D6C381B2F0E9A003A2A6F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C361B2F0E9A003A2A6F /* LaunchScreen.xib */; };
-		D87D6C441B2F0E9A003A2A6F /* SmartMeterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */; };
 		D87D6C4E1B2F1186003A2A6F /* PowerMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */; };
 		D87D6C521B301F12003A2A6F /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D87D6C511B301F12003A2A6F /* Settings.bundle */; };
 		D88AE4C61B35F1F400D8202B /* PowermeterHistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */; };
@@ -21,10 +20,13 @@
 		D88AE4CA1B36082D00D8202B /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4C91B36082D00D8202B /* GraphView.swift */; };
 		D88AE4CC1B37475E00D8202B /* PowerGraphEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */; };
 		D88C2A011B384038006302F8 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88C2A001B384038006302F8 /* AxesDrawer.swift */; };
+		D8E4D38D1C382E7300EDDF3A /* SmartMeterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D38C1C382E7300EDDF3A /* SmartMeterTests.swift */; };
+		D8E4D3941C3830C300EDDF3A /* PowerMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */; };
+		D8E4D3961C38317900EDDF3A /* getPowerProfileTest.xml in Resources */ = {isa = PBXBuildFile; fileRef = D8E4D3951C38317900EDDF3A /* getPowerProfileTest.xml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D87D6C3E1B2F0E9A003A2A6F /* PBXContainerItemProxy */ = {
+		D8E4D38F1C382E7300EDDF3A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D87D6C201B2F0E9A003A2A6F /* Project object */;
 			proxyType = 1;
@@ -42,9 +44,6 @@
 		D87D6C321B2F0E9A003A2A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D87D6C341B2F0E9A003A2A6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D87D6C371B2F0E9A003A2A6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartMeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D87D6C421B2F0E9A003A2A6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartMeterTests.swift; sourceTree = "<group>"; };
 		D87D6C4D1B2F1186003A2A6F /* PowerMeter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerMeter.swift; sourceTree = "<group>"; };
 		D87D6C511B301F12003A2A6F /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		D88AE4C51B35F1F400D8202B /* PowermeterHistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowermeterHistoryTableViewController.swift; sourceTree = "<group>"; };
@@ -52,6 +51,10 @@
 		D88AE4C91B36082D00D8202B /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		D88AE4CB1B37475E00D8202B /* PowerGraphEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerGraphEngine.swift; sourceTree = "<group>"; };
 		D88C2A001B384038006302F8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
+		D8E4D38A1C382E7200EDDF3A /* SmartMeterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartMeterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8E4D38C1C382E7300EDDF3A /* SmartMeterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartMeterTests.swift; sourceTree = "<group>"; };
+		D8E4D38E1C382E7300EDDF3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D8E4D3951C38317900EDDF3A /* getPowerProfileTest.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = getPowerProfileTest.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +65,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87D6C3A1B2F0E9A003A2A6F /* Frameworks */ = {
+		D8E4D3871C382E7200EDDF3A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -76,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				D87D6C2A1B2F0E9A003A2A6F /* SmartMeter */,
-				D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */,
+				D8E4D38B1C382E7300EDDF3A /* SmartMeterTests */,
 				D87D6C291B2F0E9A003A2A6F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,7 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */,
-				D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */,
+				D8E4D38A1C382E7200EDDF3A /* SmartMeterTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,21 +122,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D87D6C401B2F0E9A003A2A6F /* SmartMeterTests */ = {
+		D8E4D38B1C382E7300EDDF3A /* SmartMeterTests */ = {
 			isa = PBXGroup;
 			children = (
-				D87D6C431B2F0E9A003A2A6F /* SmartMeterTests.swift */,
-				D87D6C411B2F0E9A003A2A6F /* Supporting Files */,
+				D8E4D38C1C382E7300EDDF3A /* SmartMeterTests.swift */,
+				D8E4D3951C38317900EDDF3A /* getPowerProfileTest.xml */,
+				D8E4D38E1C382E7300EDDF3A /* Info.plist */,
 			);
 			path = SmartMeterTests;
-			sourceTree = "<group>";
-		};
-		D87D6C411B2F0E9A003A2A6F /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D87D6C421B2F0E9A003A2A6F /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,22 +152,22 @@
 			productReference = D87D6C281B2F0E9A003A2A6F /* SmartMeter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D87D6C3C1B2F0E9A003A2A6F /* SmartMeterTests */ = {
+		D8E4D3891C382E7200EDDF3A /* SmartMeterTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D87D6C4A1B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeterTests" */;
+			buildConfigurationList = D8E4D3911C382E7300EDDF3A /* Build configuration list for PBXNativeTarget "SmartMeterTests" */;
 			buildPhases = (
-				D87D6C391B2F0E9A003A2A6F /* Sources */,
-				D87D6C3A1B2F0E9A003A2A6F /* Frameworks */,
-				D87D6C3B1B2F0E9A003A2A6F /* Resources */,
+				D8E4D3861C382E7200EDDF3A /* Sources */,
+				D8E4D3871C382E7200EDDF3A /* Frameworks */,
+				D8E4D3881C382E7200EDDF3A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D87D6C3F1B2F0E9A003A2A6F /* PBXTargetDependency */,
+				D8E4D3901C382E7300EDDF3A /* PBXTargetDependency */,
 			);
 			name = SmartMeterTests;
 			productName = SmartMeterTests;
-			productReference = D87D6C3D1B2F0E9A003A2A6F /* SmartMeterTests.xctest */;
+			productReference = D8E4D38A1C382E7200EDDF3A /* SmartMeterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -188,8 +184,8 @@
 					D87D6C271B2F0E9A003A2A6F = {
 						CreatedOnToolsVersion = 6.3.2;
 					};
-					D87D6C3C1B2F0E9A003A2A6F = {
-						CreatedOnToolsVersion = 6.3.2;
+					D8E4D3891C382E7200EDDF3A = {
+						CreatedOnToolsVersion = 7.2;
 						TestTargetID = D87D6C271B2F0E9A003A2A6F;
 					};
 				};
@@ -208,7 +204,7 @@
 			projectRoot = "";
 			targets = (
 				D87D6C271B2F0E9A003A2A6F /* SmartMeter */,
-				D87D6C3C1B2F0E9A003A2A6F /* SmartMeterTests */,
+				D8E4D3891C382E7200EDDF3A /* SmartMeterTests */,
 			);
 		};
 /* End PBXProject section */
@@ -225,10 +221,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87D6C3B1B2F0E9A003A2A6F /* Resources */ = {
+		D8E4D3881C382E7200EDDF3A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8E4D3961C38317900EDDF3A /* getPowerProfileTest.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,21 +248,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87D6C391B2F0E9A003A2A6F /* Sources */ = {
+		D8E4D3861C382E7200EDDF3A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D87D6C441B2F0E9A003A2A6F /* SmartMeterTests.swift in Sources */,
+				D8E4D38D1C382E7300EDDF3A /* SmartMeterTests.swift in Sources */,
+				D8E4D3941C3830C300EDDF3A /* PowerMeter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D87D6C3F1B2F0E9A003A2A6F /* PBXTargetDependency */ = {
+		D8E4D3901C382E7300EDDF3A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D87D6C271B2F0E9A003A2A6F /* SmartMeter */;
-			targetProxy = D87D6C3E1B2F0E9A003A2A6F /* PBXContainerItemProxy */;
+			targetProxy = D8E4D38F1C382E7300EDDF3A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -395,29 +393,28 @@
 			};
 			name = Release;
 		};
-		D87D6C4B1B2F0E9A003A2A6F /* Debug */ = {
+		D8E4D3921C382E7300EDDF3A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = SmartMeterTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "lazar.info.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = lazar.info.SmartMeterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMeter.app/SmartMeter";
 			};
 			name = Debug;
 		};
-		D87D6C4C1B2F0E9A003A2A6F /* Release */ = {
+		D8E4D3931C382E7300EDDF3A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = SmartMeterTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "lazar.info.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = lazar.info.SmartMeterTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartMeter.app/SmartMeter";
 			};
@@ -444,14 +441,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D87D6C4A1B2F0E9A003A2A6F /* Build configuration list for PBXNativeTarget "SmartMeterTests" */ = {
+		D8E4D3911C382E7300EDDF3A /* Build configuration list for PBXNativeTarget "SmartMeterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D87D6C4B1B2F0E9A003A2A6F /* Debug */,
-				D87D6C4C1B2F0E9A003A2A6F /* Release */,
+				D8E4D3921C382E7300EDDF3A /* Debug */,
+				D8E4D3931C382E7300EDDF3A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
