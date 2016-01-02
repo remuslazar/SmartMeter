@@ -42,6 +42,23 @@ class PowerMeter: NSObject {
             }
         }
     }
+
+    // read the device info from the power meter asynchronously
+    // will call the callback in the main queue
+    func readDeviceInfo(completionHandler: ([String: String]?) -> Void) {
+        if let url = NSURL(scheme: "http", host: host, path: "/wikidesc.xml") {
+            PowerMeterDeviceInfo.parse(url) {
+                if let deviceInfo = $0 as? PowerMeterDeviceInfo {
+                    //println("readDeviceInfo: \(deviceInfo)")
+                    completionHandler(deviceInfo.info)
+                }
+            }
+        } else {
+            completionHandler(nil)
+        }
+    }
+    
+    // MARK: - private
     
     // internal function to read one batch of data from the power meter
     private func readSamples(count: Int = 100, completionHandler: () -> Void) {
@@ -61,7 +78,7 @@ class PowerMeter: NSObject {
     }
     
     // calculate the internal RTC value of the power meter, including the current drift
-    func powerMeterRTC() -> NSDate? {
+    private func powerMeterRTC() -> NSDate? {
         if let skew = timeSkew {
             return NSDate().dateByAddingTimeInterval(skew)
         }
@@ -70,7 +87,7 @@ class PowerMeter: NSObject {
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
-    func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?) -> Void) {
+    private func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?) -> Void) {
         
         var numSamples = initialSamples
         
@@ -87,7 +104,9 @@ class PowerMeter: NSObject {
             // dont fetch the history for this long period of time. Else, reinit the history
             history.purge()
             numSamples = initialSamples
-        } else if (numSamples > 100) {
+        }
+        
+        if (numSamples > 100) {
             numSamples = 100
             lastts = history.endts?.dateByAddingTimeInterval(NSTimeInterval(numSamples))
         }
@@ -106,21 +125,6 @@ class PowerMeter: NSObject {
         }
     }
     
-    // read the device info from the power meter asynchronously
-    // will call the callback in the main queue
-    func readDeviceInfo(completionHandler: ([String: String]?) -> Void) {
-        if let url = NSURL(scheme: "http", host: host, path: "/wikidesc.xml") {
-            PowerMeterDeviceInfo.parse(url) {
-                if let deviceInfo = $0 as? PowerMeterDeviceInfo {
-                    //println("readDeviceInfo: \(deviceInfo)")
-                    completionHandler(deviceInfo.info)
-                }
-            }
-        } else {
-            completionHandler(nil)
-        }
-    }
-
     func startUpdatingCurrentWattage() {
         update()
         setupTimer()
@@ -188,7 +192,7 @@ class PowerMeter: NSObject {
         }
     }
     
-    // MARK: = Class History
+    // MARK: - PowerMeter.History class
     
     class History {
 
@@ -222,7 +226,7 @@ class PowerMeter: NSObject {
         }
         
         func getSample(index: Int) -> PowerSample? {
-            if index < data.count {
+            if startts != nil && index < data.count {
                 return PowerSample(
                     timestamp: startts!.dateByAddingTimeInterval(Double(index) * sampleRate),
                     value: data[index]
