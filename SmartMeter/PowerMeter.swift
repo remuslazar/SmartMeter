@@ -345,8 +345,10 @@ class PowerProfile : PowerMeterXMLData {
             if !inHeader, let value = NSNumberFormatter().numberFromString(input)?.integerValue {
                 v.append(value)
             }
-//        case "startts": if inHeader { startts = PowerProfile.powerMeterDateFormatter.dateFromString(input) }
-        case "endts": if inHeader { endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast())) }
+        case "endts":
+            if inHeader {
+                endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast()))
+            }
         default: break
         }
     }
