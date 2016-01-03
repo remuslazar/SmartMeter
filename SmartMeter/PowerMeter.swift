@@ -124,6 +124,7 @@ class PowerMeter: NSObject {
                 // because when lastts != nil, we know that the last sample
                 // is not the current one. So we do not call the completion handler then.
                 if (lastts == nil) { completionHandler(powerProfile.v.last) }
+                self.lastRequestStillPending = false
             } else {
                 completionHandler(nil)
             }
@@ -269,8 +270,24 @@ class PowerMeter: NSObject {
         }
         
         func prepend(powerProfile: PowerProfile) {
-            data.insertContentsOf(powerProfile.v.map({ $0 }), at: 0)
-            startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-powerProfile.v.count))
+            
+            // calculate the overlap of the new data with the already existing data
+            guard startts != nil else { return }
+            
+            let overlap = powerProfile.v.count - Int(startts!.timeIntervalSinceDate(powerProfile.startts!))
+            
+            var newData = [Int?]()
+            newData.insertContentsOf(powerProfile.v.map { $0 } , at: 0)
+            
+            if (overlap > 0) {
+                newData.removeRange(newData.count-overlap ..< newData.count)
+            } else if (overlap < 0) {
+                // fill up the missing values with nil
+                newData += [Int?](count: -overlap, repeatedValue: nil)
+            } // else overlap == 0, no need to do everything, just insert the data as is
+            
+            data.insertContentsOf(newData, at: 0)
+            startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-newData.count))
             trim()
         }
         
@@ -317,7 +334,6 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
         info[elementName] = input
     }
 }
-
 
 class PowerProfile : PowerMeterXMLData {
 
