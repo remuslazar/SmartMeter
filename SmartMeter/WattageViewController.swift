@@ -99,6 +99,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
                 calcButton.enabled = true
                 graphVC.calculateAreaOnPanMode = false
                 autoUpdate = false
+                wattageLabel.text = nil
                 
             case .dragArea:
                 pauseButton.enabled = true
