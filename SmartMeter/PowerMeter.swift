@@ -94,16 +94,19 @@ class PowerMeter: NSObject {
         
         var numSamples = initialSamples
         
+//        print("History endts=\(self.history.endts)")
+        
         // calculate how many samples we need from last request
         if let powermeterNow = powerMeterRTC(),
             let endts = self.history.endts  {
                 let count = powermeterNow.timeIntervalSinceDate(endts)
-                numSamples = Int(count) + 3
+                numSamples = Int(count) + 2
         }
         
         var lastts: NSDate?
         
-        if (numSamples > 1800) {
+        
+        if (numSamples > 600) { // more than 10 minutes running in background
             // dont fetch the history for this long period of time. Else, reinit the history
             history.purge()
             numSamples = initialSamples
@@ -114,17 +117,20 @@ class PowerMeter: NSObject {
             lastts = history.endts?.dateByAddingTimeInterval(NSTimeInterval(numSamples))
         }
 
-        let requestBeginTimestamp = NSDate()
+//        print("readCurrentWattage(), numSamples=\(numSamples), lastts=\(lastts)")
+
         readPowerProfile(numSamples: numSamples, lastts: lastts) {
             if let powerProfile = $0 {
-                if let ts = powerProfile.endts {
-                    self.history.add(powerProfile)
-                    self.timeSkew = ts.timeIntervalSinceDate(requestBeginTimestamp)
-                }
+//                print("got powerProfile \(powerProfile.startts!)-\(powerProfile.endts!)")
+                self.history.add(powerProfile)
                 // because when lastts != nil, we know that the last sample
                 // is not the current one. So we do not call the completion handler then.
-                if (lastts == nil) { completionHandler(powerProfile.v.last) }
-                self.lastRequestStillPending = false
+                if (lastts == nil) {
+                    completionHandler(powerProfile.v.last)
+                    self.timeSkew = powerProfile.endts?.timeIntervalSinceNow
+                } else {
+                    self.lastRequestStillPending = false
+                }
             } else {
                 completionHandler(nil)
             }

@@ -96,12 +96,18 @@ class SmartMeterTests: XCTestCase {
         XCTAssertEqual(history.getSample(0)?.value, 100)
         XCTAssertEqual(history.getSample(1)?.value, 200)
 
+        XCTAssertEqual(history.startts, powerProfile.startts)
+        XCTAssertEqual(history.endts, powerProfile.endts)
+
         // add a new PowerProfile to the history with overlap
         let powerProfile2 = MockPowerProfile(startts: NSDate(timeIntervalSince1970: 1), data: [200,110,210])
         history.add(powerProfile2)
         XCTAssertEqual(history.count, 4)
         XCTAssertEqual(history.getSample(0)?.value, 100)
         XCTAssertEqual(history.getSample(3)?.value, 210)
+        
+        XCTAssertEqual(history.startts, powerProfile.startts)
+        XCTAssertEqual(history.endts, powerProfile2.endts)
         
         // changing size of the history
         history.size = 3
