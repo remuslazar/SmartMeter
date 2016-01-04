@@ -16,6 +16,10 @@ protocol PowerMeterDelegate {
 
 class PowerMeter: NSObject {
     
+    enum Error : ErrorType {
+        case GenericFailure
+    }
+    
     // MARK: - public API
     
     init(host: String) { self.host = host }
@@ -69,6 +73,7 @@ class PowerMeter: NSObject {
         //                01.01.2015 10:22:32
         let lastTimestamp = history.startts?.dateByAddingTimeInterval(-1)
         readPowerProfile(numSamples: count, lastts: lastTimestamp) {
+            _ = $1 // don't care about errors right now
             if let powerProfile = $0 {
                 let remainingCapacity = self.history.size - self.history.count
                 if remainingCapacity < powerProfile.v.count {
@@ -90,7 +95,7 @@ class PowerMeter: NSObject {
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
-    private func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?) -> Void) {
+    private func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?, Error?) -> Void) {
         
         var numSamples = initialSamples
         
@@ -123,16 +128,17 @@ class PowerMeter: NSObject {
             if let powerProfile = $0 {
 //                print("got powerProfile \(powerProfile.startts!)-\(powerProfile.endts!)")
                 self.history.add(powerProfile)
-                // because when lastts != nil, we know that the last sample
-                // is not the current one. So we do not call the completion handler then.
+
                 if (lastts == nil) {
-                    completionHandler(powerProfile.v.last)
+                    completionHandler(powerProfile.v.last, nil)
                     self.timeSkew = powerProfile.endts?.timeIntervalSinceNow
                 } else {
-                    self.lastRequestStillPending = false
+                    // because when lastts != nil, we know that the last sample
+                    // is not the current one. So we supply nil as the current value
+                    completionHandler(nil, nil)
                 }
-            } else {
-                completionHandler(nil)
+            } else if let error = $1 {
+                completionHandler(nil, error)
             }
         }
     }
@@ -181,14 +187,14 @@ class PowerMeter: NSObject {
             self.lastRequestStillPending = false
             if let value = $0 {
                 self.delegate?.didUpdateWattage(value)
-            } else {
+            } else if let _ = $1 {
                 self.delegate?.powerMeterUpdateWattageDidFail()
             }
         }
     }
     
     // generic function to read a specific power profile from the power meter
-    private func readPowerProfile(numSamples numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?) -> Void) {
+    private func readPowerProfile(numSamples numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?, Error?) -> Void) {
         let u = NSURLComponents()
         u.scheme = "http"
         u.host = host
@@ -199,9 +205,9 @@ class PowerMeter: NSObject {
         ]
         PowerProfile.parse(u.URL!) {
             if let powerProfile = $0 as? PowerProfile {
-                completionHandler(powerProfile)
+                completionHandler(powerProfile, nil)
             } else {
-                completionHandler(nil)
+                completionHandler(nil, .GenericFailure)
             }
         }
     }
