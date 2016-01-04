@@ -207,8 +207,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     }
 
     // MARK: - PowerMeterDelegate
-    func didUpdateWattage(currentWattage: Int) {
-        self.wattageLabel.text = "\(currentWattage) W"
+    func didUpdateWattage(currentWattage: Int?) {
+        self.wattageLabel.text = currentWattage != nil ? "\(currentWattage!) W" : nil
         updateUI()
     }
     

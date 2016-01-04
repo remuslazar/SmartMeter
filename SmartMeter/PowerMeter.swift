@@ -10,7 +10,7 @@ import Foundation
 
 protocol PowerMeterDelegate {
     // will be called on the main queue
-    func didUpdateWattage(currentWattage: Int)
+    func didUpdateWattage(currentWattage: Int?)
     func powerMeterUpdateWattageDidFail()
 }
 
@@ -185,10 +185,10 @@ class PowerMeter: NSObject {
         lastRequestStillPending = true
         readCurrentWattage {
             self.lastRequestStillPending = false
-            if let value = $0 {
-                self.delegate?.didUpdateWattage(value)
-            } else if let _ = $1 {
+            if let _ = $1 { // error
                 self.delegate?.powerMeterUpdateWattageDidFail()
+            } else {
+                self.delegate?.didUpdateWattage($0)
             }
         }
     }
