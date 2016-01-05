@@ -29,8 +29,14 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     }()
     
     private struct Labels {
-        static let ActionSheetTitle = "Load Historical Data"
-        static let ActionSheetMessage = "You can access up to about 8 hours of sampled data from the Power Meter"
+        static let ActionSheetTitle = NSLocalizedString(
+            "Load Historical Data",
+            comment: "ActionSheet label for loading historical data from the powermeter."
+        )
+        static let ActionSheetMessage = NSLocalizedString(
+            "You can access up to about 8 hours of sampled data from the Power Meter",
+            comment: "ActionSheet description telling the user about the available history size and options."
+        )
     }
     
     private var autoUpdate = false {
@@ -106,7 +112,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
                 playButton.enabled = true
                 calcButton.enabled = false
                 graphVC.calculateAreaOnPanMode = true
-                statusBottomLabel.text = "Drag on the graph to select an area"
+                statusBottomLabel.text = NSLocalizedString("Drag on the graph to select an area",
+                    comment: "Status label text to inform the user about viable options available in this particular mode")
                 autoUpdate = false
                 
             case .loadingHistory:
@@ -125,26 +132,33 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
             preferredStyle: UIAlertControllerStyle.ActionSheet
         )
         if progressBar.hidden {
-            for timespan in [5,15,60,120] {
-                sheet.addAction(UIAlertAction(title: "\(timespan) minutes (\(timespan * 60) samples)",
+            for timespan in [1, 5,15,60,120] {
+                sheet.addAction(UIAlertAction(title: String.localizedStringWithFormat(
+                    NSLocalizedString("%d minute(s)",
+                        comment: "ActionSheet label for the selection of the time span in minutes"
+                    ),
+                    timespan),
                     style: .Default, handler: { (_) in
                         self.loadHistory(NSTimeInterval(timespan * 60))
                 }))
             }
-            sheet.addAction(UIAlertAction(title: "Reset local history",
+            sheet.addAction(UIAlertAction(title: NSLocalizedString("Reset local history",
+                comment: "ActionSheet label to reset te history"),
                 style: .Destructive, handler: { (_) in
                     self.powerMeter?.history.purge()
                     self.updateUI()
             }))
         } else {
-            sheet.addAction(UIAlertAction(title: "Abort current transfer",
+            sheet.addAction(UIAlertAction(title: NSLocalizedString("Abort current transfer",
+                comment: "ActionSheet label to abort the current transfer"),
                 style: .Destructive, handler: { (_) in
                     if !self.progressBar.hidden {
                         self.powerMeter?.abortCurrentFetchRequest = true
                     }
             }))
         }
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        sheet.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "ActionSheet cancel label"),
+            style: .Cancel, handler: nil))
         presentViewController(sheet, animated: true, completion: nil)
     }
 
@@ -178,7 +192,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     
     private func updateUI() {
         if let hist = powerMeter?.history where hist.startts != nil {
-            statusBottomLabel.text = "\(hist.count) Samples"
+            statusBottomLabel.text = String.localizedStringWithFormat(
+                NSLocalizedString("%d sample(s)", comment: "Status label about the current sample count"), hist.count)
         } else {
             statusBottomLabel.text = nil
         }
@@ -209,14 +224,18 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
 
     // MARK: - PowerMeterDelegate
     func didUpdateWattage(currentWattage: Int?) {
-        self.wattageLabel.text = currentWattage != nil ? "\(currentWattage!) W" : nil
+        self.wattageLabel.text = currentWattage != nil ? String.localizedStringWithFormat("%d W", currentWattage!) : nil
         updateUI()
     }
     
     func powerMeterUpdateWattageDidFail() {
-        let alert = UIAlertController(title: "Network Error",
-            message: "The PowerMeter device (Hostname: \(self.powerMeter?.host)) cannot be accessed over the Network. Check your settings or connectivity.", preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+        let alert = UIAlertController(title: NSLocalizedString("Network Error", comment: "Alert title when a network error occur"),
+            message: String.localizedStringWithFormat(
+                NSLocalizedString(
+                    "The PowerMeter device (Hostname: %s) cannot be accessed over the Network. Check your settings or connectivity.", comment: ""), self.powerMeter!.host),
+            preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK label in the Network Error Alert")
+            , style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
         state = .paused
     }

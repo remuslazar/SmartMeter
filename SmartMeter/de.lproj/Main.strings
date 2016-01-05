@@ -1,0 +1,51 @@
+/* Class = "UITableViewSection"; headerTitle = "Device-Info"; ObjectID = "7qj-lT-XQX"; */
+"7qj-lT-XQX.headerTitle" = "Device-Info";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "AET-ep-wya"; */
+"AET-ep-wya.text" = "Titel";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "Dxl-hG-jjK"; */
+"Dxl-hG-jjK.text" = "Detail";
+
+/* Class = "UIBarButtonItem"; title = "Info"; ObjectID = "E1Q-7V-9gK"; */
+"E1Q-7V-9gK.title" = "Info";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "JRB-UJ-GgH"; */
+"JRB-UJ-GgH.text" = "Detail";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "Jcv-an-xNb"; */
+"Jcv-an-xNb.text" = "Detail";
+
+/* Class = "UILabel"; text = "0 W"; ObjectID = "Pfp-Al-qA4"; */
+"Pfp-Al-qA4.text" = "0 W";
+
+/* Class = "UILabel"; text = "Hostname"; ObjectID = "X2w-iu-qK7"; */
+"X2w-iu-qK7.text" = "Hostname";
+
+/* Class = "UILabel"; text = "Info Label"; ObjectID = "X9g-aE-GpX"; */
+"X9g-aE-GpX.text" = "Info Label";
+
+/* Class = "UINavigationItem"; title = "SmartMeter"; ObjectID = "Zoc-Kj-grZ"; */
+"Zoc-Kj-grZ.title" = "SmartMeter";
+
+/* Class = "UIBarButtonItem"; title = "History"; ObjectID = "aUr-zC-XPc"; */
+"aUr-zC-XPc.title" = "Historische Werte";
+
+/* Class = "UILabel"; text = "Serial Number"; ObjectID = "e4Y-Gc-kMk"; */
+"e4Y-Gc-kMk.text" = "Seriennummer";
+
+/* Class = "UILabel"; text = "Name"; ObjectID = "eUX-hu-P6h"; */
+"eUX-hu-P6h.text" = "Name";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "qnu-fY-I9a"; */
+"qnu-fY-I9a.text" = "Detail";
+
+/* Class = "UITableViewSection"; headerTitle = "Network"; ObjectID = "sXh-n6-PJX"; */
+"sXh-n6-PJX.headerTitle" = "Netzwerk";
+
+/* Class = "UILabel"; text = "Model Number"; ObjectID = "uMI-dm-nFh"; */
+"uMI-dm-nFh.text" = "Modellnummer";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "xhv-fP-JX5"; */
+"xhv-fP-JX5.text" = "Detail";
+

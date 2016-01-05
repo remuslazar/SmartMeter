@@ -1,0 +1,33 @@
+/* ActionSheet label for the selection of the time span in minutes */
+"%d minute(s)" = "%d Minute(n)";
+
+/* Status label about the current sample count */
+"%d sample(s)" = "%s Einzelwert(e)";
+
+/* ActionSheet label to abort the current transfer */
+"Abort current transfer" = "Übertragung abbrechen";
+
+/* ActionSheet cancel label */
+"Cancel" = "Abbrechen";
+
+/* Status label text to inform the user about viable options available in this particular mode */
+"Drag on the graph to select an area" = "Rechteck ziehen um den Verbrauch zu berechnen";
+
+/* ActionSheet label for loading historical data from the powermeter. */
+"Load Historical Data" = "Historische Werte laden";
+
+/* Alert title when a network error occur */
+"Network Error" = "Netzwerkfehler";
+
+/* OK label in the Network Error Alert */
+"OK" = "OK";
+
+/* ActionSheet label to reset te history */
+"Reset local history" = "Historische Werte löschen";
+
+/* No comment provided by engineer. */
+"The PowerMeter device (Hostname: %s) cannot be accessed over the Network. Check your settings or connectivity." = "Der intelligente Stromzähler (Name: %s) reagiert nicht. Prüfen Sie die Einstellungen oder Ihre Netzwerkverbindung.";
+
+/* ActionSheet description telling the user about the available history size and options. */
+"You can access up to about 8 hours of sampled data from the Power Meter" = "Es können Daten für die vergangenen 8 Stunden geladen werden";
+

@@ -1,0 +1,36 @@
+<plist version="1.0">
+<dict>
+    <key>%d minute(s)</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@timespan@</string>
+        <key>timespan</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Minute</string>
+            <key>other</key>
+            <string>%d Minuten</string>
+        </dict>
+    </dict>
+    <key>%d sample(s)</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Einzelwert</string>
+            <key>other</key>
+            <string>%d Einzelwerte</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
