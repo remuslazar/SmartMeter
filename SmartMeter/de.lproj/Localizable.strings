@@ -2,7 +2,7 @@
 "%d minute(s)" = "%d Minute(n)";
 
 /* Status label about the current sample count */
-"%d sample(s)" = "%s Einzelwert(e)";
+"%d sample(s)" = "%d Einzelwert(e)";
 
 /* ActionSheet label to abort the current transfer */
 "Abort current transfer" = "Übertragung abbrechen";
@@ -25,8 +25,8 @@
 /* ActionSheet label to reset te history */
 "Reset local history" = "Historische Werte löschen";
 
-/* No comment provided by engineer. */
-"The PowerMeter device (Hostname: %s) cannot be accessed over the Network. Check your settings or connectivity." = "Der intelligente Stromzähler (Name: %s) reagiert nicht. Prüfen Sie die Einstellungen oder Ihre Netzwerkverbindung.";
+/* Alert Message telling the user that the PowerMetter cannot be accessed over the Network */
+"The PowerMeter device (Hostname: %@) cannot be accessed over the Network. Check your settings or connectivity." = "Der intelligente Stromzähler (Name: %@) reagiert nicht. Prüfen Sie die Einstellungen oder Ihre Netzwerkverbindung.";
 
 /* ActionSheet description telling the user about the available history size and options. */
 "You can access up to about 8 hours of sampled data from the Power Meter" = "Es können Daten für die vergangenen 8 Stunden geladen werden";

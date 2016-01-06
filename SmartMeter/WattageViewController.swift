@@ -232,7 +232,8 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         let alert = UIAlertController(title: NSLocalizedString("Network Error", comment: "Alert title when a network error occur"),
             message: String.localizedStringWithFormat(
                 NSLocalizedString(
-                    "The PowerMeter device (Hostname: %s) cannot be accessed over the Network. Check your settings or connectivity.", comment: ""), self.powerMeter!.host),
+                    "The PowerMeter device (Hostname: %@) cannot be accessed over the Network. Check your settings or connectivity.", comment: "Alert Message telling the user that the PowerMetter cannot be accessed over the Network"),
+            self.powerMeter!.host),
             preferredStyle: .Alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK label in the Network Error Alert")
             , style: UIAlertActionStyle.Default, handler: nil))

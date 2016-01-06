@@ -35,7 +35,7 @@ class PowerMeter: NSObject {
     // the maximum batch size supported by the device is currently 100, which is also the default
     func readSamples(num: Int, batchSize: Int = 100, completionHandler: (remaining: Int) -> Void) {
         readSamples {
-            let remaining = max(0, num - batchSize)
+            let remaining = max( 0, num - batchSize)
             if self.abortCurrentFetchRequest {
                 completionHandler(remaining: 0)
                 self.abortCurrentFetchRequest = false
