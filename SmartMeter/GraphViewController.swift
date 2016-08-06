@@ -37,9 +37,9 @@ class GraphViewController: UIViewController {
     @IBOutlet weak var graphView: GraphView! {
         didSet {
             graphView.datasource = powerGraphEngine
-            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: "zoom:"))
-            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: "pan:"))
-            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "doubleTap:")
+            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(GraphViewController.zoom(_:))))
+            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(GraphViewController.pan(_:))))
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(GraphViewController.doubleTap(_:)))
             tapGestureRecognizer.numberOfTapsRequired = 2
             graphView.addGestureRecognizer(tapGestureRecognizer)
         }

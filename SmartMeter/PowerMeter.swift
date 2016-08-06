@@ -35,7 +35,7 @@ class PowerMeter: NSObject {
     // the maximum batch size supported by the device is currently 100, which is also the default
     func readSamples(num: Int, batchSize: Int = 100, completionHandler: (remaining: Int) -> Void) {
         readSamples {
-            let remaining = max( 0, num - batchSize)
+            let remaining = max(0, num - batchSize)
             if self.abortCurrentFetchRequest {
                 completionHandler(remaining: 0)
                 self.abortCurrentFetchRequest = false
@@ -171,7 +171,7 @@ class PowerMeter: NSObject {
     
     private func setupTimer() {
         timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: Selector("update"),
+        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: #selector(PowerMeter.update),
             userInfo: nil, repeats: true)
     }
     
@@ -261,7 +261,7 @@ class PowerMeter: NSObject {
                 var count = 0
                 for i: Int in 0..<resample {
                     if data.count == index+i { break }
-                    if let val = data[index+i]?.value {
+                    if let val = data[index+i] {
                         sum += Int(val)
                         count += 1
                     }

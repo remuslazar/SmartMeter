@@ -261,10 +261,10 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         super.viewDidLoad()
         readUserDefaults()
         // listen for changes in the app settings and handle it
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("readUserDefaults"),
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WattageViewController.readUserDefaults),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didEnterBackground"),
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WattageViewController.didEnterBackground),
             name: UIApplicationDidEnterBackgroundNotification, object: nil)
         updateUI()
         graphVC.graphView.delegate = self

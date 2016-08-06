@@ -39,7 +39,7 @@ class AxesDrawer: UIView {
         formatter.maximumFractionDigits = 1
         formatter.minimumIntegerDigits = 1
         
-        for var yValue: CGFloat = stepValue ; yValue < maxY ; yValue += stepValue {
+        for yValue in stepValue.stride(to: maxY, by: stepValue) {
             let y = bounds.height - (yValue / maxY * bounds.height)
             if let label = formatter.stringFromNumber(yValue)?.stringByAppendingString("W") {
                 drawText(label, toPoint: CGPoint(x: Constants.YScaleMarginLeft, y: y))
@@ -59,7 +59,7 @@ class AxesDrawer: UIView {
         
         let seconds = NSCalendar.currentCalendar().component(.Second, fromDate: minX)
         
-        for var xValue: CGFloat = 60.0 - CGFloat(seconds) ; xValue < CGFloat(timeInterval) ; xValue += stepValue {
+        for xValue in (60.0 - CGFloat(seconds)).stride(to: CGFloat(timeInterval), by: stepValue) {
             let x = xValue / CGFloat(timeInterval) * bounds.width
             let location = CGPoint(x: x, y: bounds.height - Constants.XScaleMarginBottom)
             let date = minX.dateByAddingTimeInterval(NSTimeInterval(xValue))

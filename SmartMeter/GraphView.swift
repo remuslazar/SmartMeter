@@ -127,7 +127,7 @@ class GraphView: UIView {
         let step = Int(ceil(CGFloat(datasource.graphViewgetSampleCount()) /
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
-        for var index = 0 ; index < datasource.graphViewgetSampleCount() ; index += step {
+        for index in 0.stride(to: datasource.graphViewgetSampleCount(), by: step) {
             let sample = datasource.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
                 let x = CGFloat(index) * xScaleFactor
