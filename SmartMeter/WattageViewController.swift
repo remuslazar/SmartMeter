@@ -131,6 +131,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
             message: Labels.ActionSheetMessage,
             preferredStyle: UIAlertControllerStyle.ActionSheet
         )
+        
+        if let ppc = sheet.popoverPresentationController, button = sender as? UIBarButtonItem {
+            ppc.barButtonItem = button
+        }
+        
         if progressBar.hidden {
             for timespan in [1, 5,15,60,120] {
                 sheet.addAction(UIAlertAction(title: String.localizedStringWithFormat(
