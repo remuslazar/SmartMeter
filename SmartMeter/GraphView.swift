@@ -10,12 +10,12 @@ import UIKit
 
 protocol GraphViewDatasource {
     func graphViewGetMaxY() -> Double
-    func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample?
+    func graphViewgetSample(_ x: Int, resample: Int) -> PowerMeter.History.PowerSample?
     func graphViewgetSampleCount() -> Int
 }
 
 protocol GraphViewDelegate {
-    func graphViewDidUpdateDraggedArea(powerAvg powerAvg: Double, timespan: Double)
+    func graphViewDidUpdateDraggedArea(powerAvg: Double, timespan: Double)
 }
 
 class GraphView: UIView {
@@ -38,7 +38,7 @@ class GraphView: UIView {
         }
     }
     
-    override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return !calculateAreaMode
     }
     
@@ -51,43 +51,43 @@ class GraphView: UIView {
     private var dragStartingPoint: CGPoint?
     var selectedRect: CGRect?
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !calculateAreaMode { return }
         if let touch = touches.first {
-            dragStartingPoint = touch.locationInView(self)
+            dragStartingPoint = touch.location(in: self)
             selectedRect = nil
             setNeedsDisplay()
         }
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !calculateAreaMode { return }
         dragStartingPoint = nil
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !calculateAreaMode { return }
         if let touch = touches.first {
             if dragStartingPoint != nil {
-                let dragEndPoint = touch.locationInView(self)
-                selectedRect = CGRectStandardize(CGRectMake(
-                    dragStartingPoint!.x, dragStartingPoint!.y,
-                    dragEndPoint.x - dragStartingPoint!.x,
-                    dragEndPoint.y - dragStartingPoint!.y
-                    ))
+                let dragEndPoint = touch.location(in: self)
+                selectedRect = CGRect(
+                    x: dragStartingPoint!.x, y: dragStartingPoint!.y,
+                    width: dragEndPoint.x - dragStartingPoint!.x,
+                    height: dragEndPoint.y - dragStartingPoint!.y
+                    ).standardized
                 setNeedsDisplay()
             }
         }
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !calculateAreaMode { return }
         selectedRect = nil
     }
     
     private func calculateArea() {
         
-        func yValueForYCoodrdinate(y:CGFloat) -> Double {
+        func yValueForYCoodrdinate(_ y:CGFloat) -> Double {
             return Double(maxY * (bounds.height - y)/bounds.height)
         }
     
@@ -107,14 +107,14 @@ class GraphView: UIView {
                 if let ts0 = datasource.graphViewgetSample(x0, resample: 1)?.timestamp,
                     let ts1 = datasource.graphViewgetSample(x1, resample: 1)?.timestamp {
                         powerAvg /= Double(x1-x0)
-                        let deltaT = Double(ts1.timeIntervalSinceDate(ts0))
+                        let deltaT = Double(ts1.timeIntervalSince(ts0 as Date))
                         delegate?.graphViewDidUpdateDraggedArea(powerAvg: powerAvg, timespan: deltaT)
                 }
             }
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         if datasource == nil { return }
         if datasource.graphViewgetSampleCount() < 2 { return }
 
@@ -127,7 +127,7 @@ class GraphView: UIView {
         let step = Int(ceil(CGFloat(datasource.graphViewgetSampleCount()) /
             (bounds.width * contentScaleFactor * Constants.NumSamplesPerPixelRatio)))
         
-        for index in 0.stride(to: datasource.graphViewgetSampleCount(), by: step) {
+        for index in stride(from: 0, to: datasource.graphViewgetSampleCount(), by: step) {
             let sample = datasource.graphViewgetSample(index, resample: step)
             if let value = sample?.value {
                 let x = CGFloat(index) * xScaleFactor
@@ -135,15 +135,15 @@ class GraphView: UIView {
                 let newPoint = CGPoint(x: x, y: bounds.height-y)
                 
                 if lastPoint != nil {
-                    path.addLineToPoint(newPoint)
+                    path.addLine(to: newPoint)
                 } else {
-                    path.moveToPoint(newPoint)
+                    path.move(to: newPoint)
                 }
                 lastPoint = newPoint
             }
         }
         
-        UIColor.blackColor().set()
+        UIColor.black.set()
         path.lineWidth = Constants.lineWidth
         path.stroke()
         
@@ -154,15 +154,15 @@ class GraphView: UIView {
         
         if let selection = selectedRect {
             let clip = path.copy() as! UIBezierPath
-            clip.addLineToPoint(CGPoint(x: selection.maxX, y: bounds.height))
-            clip.addLineToPoint(CGPoint(x: selection.minX, y: bounds.height))
-            clip.closePath()
+            clip.addLine(to: CGPoint(x: selection.maxX, y: bounds.height))
+            clip.addLine(to: CGPoint(x: selection.minX, y: bounds.height))
+            clip.close()
             clip.addClip()
             
             let rect = UIBezierPath(rect: selection)
             rect.lineWidth = Constants.lineWidth
             rect.stroke()
-            UIColor.blueColor().setFill()
+            UIColor.blue.setFill()
             rect.fill()
             calculateArea()
         }

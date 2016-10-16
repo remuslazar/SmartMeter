@@ -46,7 +46,7 @@ class PowerGraphEngine: GraphViewDatasource {
         return min(Int(round(numVisibleSamples)), history.count)
     }
     
-    func graphViewgetSample(x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
+    func graphViewgetSample(_ x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
         let index = x + Int(round(offsetX))
         if resample == 1 { return history.getSample(index) }
         return history.getSample(index, resample: resample)
@@ -56,7 +56,7 @@ class PowerGraphEngine: GraphViewDatasource {
         return maxY
     }
     
-    func select(x1 x1: Double, x2: Double, y0: Double) {
+    func select(x1: Double, x2: Double, y0: Double) {
         print("x1: \(x1), x2: \(x2), y0: \(y0)")
     }
     

@@ -10,12 +10,12 @@ import XCTest
 
 class SmartMeterTests: XCTestCase {
     
-    var testBundle: NSBundle!
+    var testBundle: Bundle!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        testBundle = NSBundle(forClass: self.classForCoder)
+        testBundle = Bundle(for: self.classForCoder)
     }
     
     override func tearDown() {
@@ -26,9 +26,9 @@ class SmartMeterTests: XCTestCase {
     func testPowerMeterXMLParsing() {
         
         // get the URL of the XML test file
-        let url = testBundle.URLForResource("getPowerProfileTest", withExtension: "xml")!
+        let url = testBundle.url(forResource: "getPowerProfileTest", withExtension: "xml")!
         
-        let parsingDone = expectationWithDescription("parsed")
+        let parsingDone = expectation(description: "parsed")
         
         var powerProfile: PowerProfile!
         
@@ -38,7 +38,7 @@ class SmartMeterTests: XCTestCase {
             parsingDone.fulfill()
         }
         
-        waitForExpectationsWithTimeout(2, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertNotNil(powerProfile.v)
         XCTAssertEqual(powerProfile.v.count, 100)
@@ -56,28 +56,28 @@ class SmartMeterTests: XCTestCase {
     func testXMLParsingPerformance() {
 
         // get the URL of the XML test file
-        let url = self.testBundle.URLForResource("getPowerProfileTest", withExtension: "xml")!
+        let url = self.testBundle.url(forResource: "getPowerProfileTest", withExtension: "xml")!
         var powerProfile: PowerProfile!
         
-        self.measureBlock {
-            let parsingDone = self.expectationWithDescription("parsed")
+        self.measure {
+            let parsingDone = self.expectation(description: "parsed")
             // parse the XML
             PowerProfile.parse(url) {
                 powerProfile = $0 as! PowerProfile
                 parsingDone.fulfill()
             }
             
-            self.waitForExpectationsWithTimeout(2, handler: nil)
+            self.waitForExpectations(timeout: 2, handler: nil)
             XCTAssertEqual(powerProfile.v.count, 100)
         }
     }
     
     class MockPowerProfile : PowerProfile {
-        init(startts: NSDate, data: [Int]) {
-            super.init(url: NSURL()) { (dummy) -> Void in
+        init(startts: Date, data: [Int]) {
+            super.init(url: URL(string: "foo")!) { (dummy) -> Void in
                 
             }
-            self.endts = startts.dateByAddingTimeInterval(NSTimeInterval(data.count-1))
+            self.endts = startts.addingTimeInterval(TimeInterval(data.count-1))
             self.v = data
         }
     }
@@ -85,10 +85,10 @@ class SmartMeterTests: XCTestCase {
     func testHistoryModule() {
         
         let history = PowerMeter.History(size: 10)
-        let powerProfile = MockPowerProfile(startts: NSDate(timeIntervalSince1970: 0), data: [100,200])
+        let powerProfile = MockPowerProfile(startts: Date(timeIntervalSince1970: 0), data: [100,200])
         
         // test PowerProfile startts calculation
-        XCTAssertEqual(powerProfile.startts, NSDate(timeIntervalSince1970: 0))
+        XCTAssertEqual(powerProfile.startts, Date(timeIntervalSince1970: 0))
 
         // add data
         history.add(powerProfile)
@@ -100,7 +100,7 @@ class SmartMeterTests: XCTestCase {
         XCTAssertEqual(history.endts, powerProfile.endts)
 
         // add a new PowerProfile to the history with overlap
-        let powerProfile2 = MockPowerProfile(startts: NSDate(timeIntervalSince1970: 1), data: [200,110,210])
+        let powerProfile2 = MockPowerProfile(startts: Date(timeIntervalSince1970: 1), data: [200,110,210])
         history.add(powerProfile2)
         XCTAssertEqual(history.count, 4)
         XCTAssertEqual(history.getSample(0)?.value, 100)
@@ -117,20 +117,20 @@ class SmartMeterTests: XCTestCase {
         // test the prepend method (this method inserts new data at the begining)
         history.purge()
         history.size = 100
-        history.add(MockPowerProfile(startts: NSDate(timeIntervalSince1970: 10), data: [100,200]))
+        history.add(MockPowerProfile(startts: Date(timeIntervalSince1970: 10), data: [100,200]))
         XCTAssertEqual(history.count, 2)
         // prepend a new PowerProfile to the history without overlap
-        history.prepend(MockPowerProfile(startts: NSDate(timeIntervalSince1970: 8), data: [1,2]))
+        history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 8), data: [1,2]))
         XCTAssertEqual(history.count, 4)
         XCTAssertEqual(history.getSample(0)?.value, 1)
         
         // prepend a new PowerProfile to the history with overlap
-        history.prepend(MockPowerProfile(startts: NSDate(timeIntervalSince1970: 7), data: [12,0]))
+        history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 7), data: [12,0]))
         XCTAssertEqual(history.count, 5)
         XCTAssertEqual(history.getSample(0)?.value, 12)
 
         // prepend a new PowerProfile to the history with overlap and nil values
-        history.prepend(MockPowerProfile(startts: NSDate(timeIntervalSince1970: 0), data: [0,1,2]))
+        history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 0), data: [0,1,2]))
         XCTAssertEqual(history.count, 12)
         XCTAssertEqual(history.getSample(0)?.value, 0)
         XCTAssertEqual(history.getSample(3)?.value, nil)

@@ -47,9 +47,9 @@ class GraphViewController: UIViewController {
 
     // MARK: - Gesture Recognizer methods
     
-    func doubleTap(gesture: UITapGestureRecognizer) {
+    func doubleTap(_ gesture: UITapGestureRecognizer) {
         switch gesture.state {
-        case .Ended:
+        case .ended:
             powerGraphEngine?.scaleX = 1.0
             graphView.setNeedsDisplay()
         default: break
@@ -57,19 +57,19 @@ class GraphViewController: UIViewController {
     }
     
     
-    func pan(gesture: UIPanGestureRecognizer) {
+    func pan(_ gesture: UIPanGestureRecognizer) {
         
         struct State {
-            static var firstEdge = CGPointZero
+            static var firstEdge = CGPoint.zero
         }
         
         switch gesture.state {
-        case .Changed:
+        case .changed:
             if powerGraphEngine != nil {
-                let translation = gesture.translationInView(graphView)
+                let translation = gesture.translation(in: graphView)
                 let samplesPerPoint = CGFloat(powerGraphEngine!.graphViewgetSampleCount()) / graphView.bounds.width
                 powerGraphEngine?.offsetX -= Double(translation.x * samplesPerPoint)
-                gesture.setTranslation(CGPointZero, inView: graphView)
+                gesture.setTranslation(CGPoint.zero, in: graphView)
                 graphView.setNeedsDisplay()
             }
         default: break
@@ -77,20 +77,20 @@ class GraphViewController: UIViewController {
     
     }
 
-    func zoom(gesture: UIPinchGestureRecognizer) {
+    func zoom(_ gesture: UIPinchGestureRecognizer) {
         
-        func constrain(input: CGFloat) -> CGFloat {
+        func constrain(_ input: CGFloat) -> CGFloat {
             return input < 0.2 ? 0 : input > 0.8 ? 1 : input
         }
         
         switch (gesture.state) {
-        case .Changed:
+        case .changed:
             // we want to consider direction of the pinch to determine if we want to
             // scale in the x or/and y direction
-            if gesture.numberOfTouches() >= 2 {
+            if gesture.numberOfTouches >= 2 {
                 let fingers = [
-                    gesture.locationOfTouch(0, inView: graphView),
-                    gesture.locationOfTouch(1, inView: graphView)
+                    gesture.location(ofTouch: 0, in: graphView),
+                    gesture.location(ofTouch: 1, in: graphView)
                 ]
                 
                 let deltaX = abs(fingers[0].x - fingers[1].x)

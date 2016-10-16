@@ -10,14 +10,14 @@ import Foundation
 
 protocol PowerMeterDelegate {
     // will be called on the main queue
-    func didUpdateWattage(currentWattage: Int?)
+    func didUpdateWattage(_ currentWattage: Int?)
     func powerMeterUpdateWattageDidFail()
 }
 
 class PowerMeter: NSObject {
     
-    enum Error : ErrorType {
-        case GenericFailure
+    enum Failure : Error {
+        case genericFailure
     }
     
     // MARK: - public API
@@ -33,14 +33,14 @@ class PowerMeter: NSObject {
     
     // read power samples from the power meter and append them to the history data
     // the maximum batch size supported by the device is currently 100, which is also the default
-    func readSamples(num: Int, batchSize: Int = 100, completionHandler: (remaining: Int) -> Void) {
+    func readSamples(_ num: Int, batchSize: Int = 100, completionHandler: @escaping (_ remaining: Int) -> Void) {
         readSamples {
             let remaining = max(0, num - batchSize)
             if self.abortCurrentFetchRequest {
-                completionHandler(remaining: 0)
+                completionHandler(0)
                 self.abortCurrentFetchRequest = false
             } else {
-                completionHandler(remaining: remaining)
+                completionHandler(remaining)
                 if remaining > 0 {
                     self.readSamples(remaining, completionHandler: completionHandler)
                 }
@@ -50,12 +50,12 @@ class PowerMeter: NSObject {
 
     // read the device info from the power meter asynchronously
     // will call the callback in the main queue
-    func readDeviceInfo(completionHandler: ([String: String]?) -> Void) {
-        let u = NSURLComponents()
+    func readDeviceInfo(_ completionHandler: @escaping ([String: String]?) -> Void) {
+        var u = URLComponents()
         u.scheme = "http"
         u.host = host
         u.path = "/wikidesc.xml"
-        PowerMeterDeviceInfo.parse(u.URL!) {
+        PowerMeterDeviceInfo.parse(u.url!) {
             if let deviceInfo = $0 as? PowerMeterDeviceInfo {
                 //println("readDeviceInfo: \(deviceInfo)")
                 completionHandler(deviceInfo.info)
@@ -68,10 +68,10 @@ class PowerMeter: NSObject {
     // MARK: - private
     
     // internal function to read one batch of data from the power meter
-    private func readSamples(count: Int = 100, completionHandler: () -> Void) {
+    private func readSamples(_ count: Int = 100, completionHandler: @escaping () -> Void) {
         // e.g. startts = 01.01.2015 10:22:33 we need to read data until
         //                01.01.2015 10:22:32
-        let lastTimestamp = history.startts?.dateByAddingTimeInterval(-1)
+        let lastTimestamp = history.startts?.addingTimeInterval(-1)
         readPowerProfile(numSamples: count, lastts: lastTimestamp) {
             _ = $1 // don't care about errors right now
             if let powerProfile = $0 {
@@ -86,16 +86,16 @@ class PowerMeter: NSObject {
     }
     
     // calculate the internal RTC value of the power meter, including the current drift
-    private func powerMeterRTC() -> NSDate? {
+    private func powerMeterRTC() -> Date? {
         if let skew = timeSkew {
-            return NSDate().dateByAddingTimeInterval(skew)
+            return Date().addingTimeInterval(skew)
         }
         return nil
     }
     
     // read the current wattage from the power meter asynchronously
     // will call the callback in the main queue
-    private func readCurrentWattage(initialSamples: Int = 2, completionHandler: (Int?, Error?) -> Void) {
+    private func readCurrentWattage(_ initialSamples: Int = 2, completionHandler: @escaping (Int?, Failure?) -> Void) {
         
         var numSamples = initialSamples
         
@@ -104,11 +104,11 @@ class PowerMeter: NSObject {
         // calculate how many samples we need from last request
         if let powermeterNow = powerMeterRTC(),
             let endts = self.history.endts  {
-                let count = powermeterNow.timeIntervalSinceDate(endts)
+                let count = powermeterNow.timeIntervalSince(endts)
                 numSamples = Int(count) + 2
         }
         
-        var lastts: NSDate?
+        var lastts: Date?
         
         
         if (numSamples > 600) { // more than 10 minutes running in background
@@ -119,7 +119,7 @@ class PowerMeter: NSObject {
         
         if (numSamples > 100) {
             numSamples = 100
-            lastts = history.endts?.dateByAddingTimeInterval(NSTimeInterval(numSamples))
+            lastts = history.endts?.addingTimeInterval(TimeInterval(numSamples))
         }
 
 //        print("readCurrentWattage(), numSamples=\(numSamples), lastts=\(lastts)")
@@ -154,10 +154,10 @@ class PowerMeter: NSObject {
     }
     
     func isCurrentlyUpdatingCurrentWattage() -> Bool {
-        return timer != nil && timer!.valid
+        return timer != nil && timer!.isValid
     }
     
-    var autoUpdateTimeInterval = NSTimeInterval(3) {
+    var autoUpdateTimeInterval = TimeInterval(3) {
         didSet {
             if timer != nil { // update the current timer
                 setupTimer()
@@ -167,18 +167,18 @@ class PowerMeter: NSObject {
     
     // MARK: - Private data
     
-    private var timer: NSTimer?
+    private var timer: Timer?
     
     private func setupTimer() {
         timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(autoUpdateTimeInterval, target: self, selector: #selector(PowerMeter.update),
+        timer = Timer.scheduledTimer(timeInterval: autoUpdateTimeInterval, target: self, selector: #selector(PowerMeter.update),
             userInfo: nil, repeats: true)
     }
     
     private var lastRequestStillPending = false
 
     // time skew of the power meter device (negative means that the device RTC is late)
-    private var timeSkew: NSTimeInterval?
+    private var timeSkew: TimeInterval?
 
     func update() {
         if delegate == nil || lastRequestStillPending { return }
@@ -194,20 +194,20 @@ class PowerMeter: NSObject {
     }
     
     // generic function to read a specific power profile from the power meter
-    private func readPowerProfile(numSamples numSamples: Int, lastts: NSDate?, completionHandler: (PowerProfile?, Error?) -> Void) {
-        let u = NSURLComponents()
+    private func readPowerProfile(numSamples: Int, lastts: Date?, completionHandler: @escaping (PowerProfile?, Failure?) -> Void) {
+        var u = URLComponents()
         u.scheme = "http"
         u.host = host
         u.path = "/InstantView/request/getPowerProfile.html"
         u.queryItems = [
-            NSURLQueryItem(name: "ts", value: PowerProfile.timestampFromDate(lastts)),
-            NSURLQueryItem(name: "n", value: "\(numSamples)")
+            URLQueryItem(name: "ts", value: PowerProfile.timestampFromDate(lastts)),
+            URLQueryItem(name: "n", value: "\(numSamples)")
         ]
-        PowerProfile.parse(u.URL!) {
+        PowerProfile.parse(u.url!) {
             if let powerProfile = $0 as? PowerProfile {
                 completionHandler(powerProfile, nil)
             } else {
-                completionHandler(nil, .GenericFailure)
+                completionHandler(nil, .genericFailure)
             }
         }
     }
@@ -221,12 +221,12 @@ class PowerMeter: NSObject {
         }
         
         func purge() {
-            data.removeAll(keepCapacity: false)
+            data.removeAll(keepingCapacity: false)
             startts = nil
         }
         
         struct PowerSample {
-            let timestamp: NSDate
+            let timestamp: Date
             let value: Int?
         }
 
@@ -235,27 +235,27 @@ class PowerMeter: NSObject {
         // size in num samples (seconds)
         var size: Int { didSet { trim() } }
         let sampleRate = 1.0 // in seconds
-        var startts: NSDate?
+        var startts: Date?
         
-        var endts: NSDate? {
-            return startts?.dateByAddingTimeInterval(Double(data.count-1))
+        var endts: Date? {
+            return startts?.addingTimeInterval(Double(data.count-1))
         }
         
         var count: Int {
             return data.count
         }
         
-        func getSample(index: Int) -> PowerSample? {
+        func getSample(_ index: Int) -> PowerSample? {
             if startts != nil && index < data.count {
                 return PowerSample(
-                    timestamp: startts!.dateByAddingTimeInterval(Double(index) * sampleRate),
+                    timestamp: startts!.addingTimeInterval(Double(index) * sampleRate),
                     value: data[index]
                 )
             }
             return nil
         }
         
-        func getSample(index: Int, resample: Int) -> PowerSample? {
+        func getSample(_ index: Int, resample: Int) -> PowerSample? {
             if let sample = getSample(index) {
                 var sum: Int = 0
                 var count = 0
@@ -276,39 +276,40 @@ class PowerMeter: NSObject {
         private func trim() {
             let count = self.count - size
             if (count > 0) {
-                for _ in 1...count { data.removeAtIndex(0) }
-                startts = startts?.dateByAddingTimeInterval(NSTimeInterval(count))
+                for _ in 1...count { data.remove(at: 0) }
+                startts = startts?.addingTimeInterval(TimeInterval(count))
             }
         }
         
-        func prepend(powerProfile: PowerProfile) {
+        func prepend(_ powerProfile: PowerProfile) {
             
             // calculate the overlap of the new data with the already existing data
             guard startts != nil else { return }
+            guard powerProfile.v.count > 0 else { return }
             
-            let overlap = powerProfile.v.count - Int(startts!.timeIntervalSinceDate(powerProfile.startts!))
+            let overlap = powerProfile.v.count - Int(startts!.timeIntervalSince(powerProfile.startts!))
             
             var newData = [Int?]()
-            newData.insertContentsOf(powerProfile.v.map { $0 } , at: 0)
+            newData.insert(contentsOf: powerProfile.v.map { $0 } , at: 0)
             
             if (overlap > 0) {
-                newData.removeRange(newData.count-overlap ..< newData.count)
+                newData.removeSubrange(newData.count-overlap ..< newData.count)
             } else if (overlap < 0) {
                 // fill up the missing values with nil
-                newData += [Int?](count: -overlap, repeatedValue: nil)
+                newData += [Int?](repeating: nil, count: -overlap)
             } // else overlap == 0, no need to do everything, just insert the data as is
             
-            data.insertContentsOf(newData, at: 0)
-            startts = startts?.dateByAddingTimeInterval(NSTimeInterval(-newData.count))
+            data.insert(contentsOf: newData, at: 0)
+            startts = startts?.addingTimeInterval(TimeInterval(-newData.count))
             trim()
         }
         
-        func add(powerProfile: PowerProfile) {
+        func add(_ powerProfile: PowerProfile) {
             if startts == nil {
                 startts = powerProfile.startts
                 data = powerProfile.v.map { $0 }
             } else {
-                var offset = powerProfile.startts!.timeIntervalSinceDate(endts!) - sampleRate
+                var offset = powerProfile.startts!.timeIntervalSince(endts!) - sampleRate
                 //println("offset: \(offset), powerProfile.startts: \(powerProfile.startts!), endts: \(endts!)")
                 if (offset > 0) {
                     print("\(offset) nil values")
@@ -332,17 +333,17 @@ class PowerMeterDeviceInfo : PowerMeterXMLData {
 
     var info = [String: String]()
     
-    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+    class func parse(_ url: URL, completionHandler: @escaping PowerMeterXMLDataCompletionHandler) {
         PowerMeterDeviceInfo(url: url, completionHandler: completionHandler).parse()
     }
     
     // to simplify things, just take all xml elements and put them in a flat list
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
-        attributes attributeDict: [NSObject : AnyObject]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
+        attributes attributeDict: [AnyHashable: Any]) {
             input = ""
     }
     
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         info[elementName] = input
     }
 }
@@ -355,9 +356,9 @@ class PowerProfile : PowerMeterXMLData {
     var v = [Int]()
     
     // start and end timestamps
-    var endts: NSDate?
-    var startts: NSDate? { // computed property
-        return endts?.dateByAddingTimeInterval(NSTimeInterval(-(v.count-1)))
+    var endts: Date?
+    var startts: Date? { // computed property
+        return endts?.addingTimeInterval(TimeInterval(-(v.count-1)))
     }
     
     // MARK: - Constants
@@ -367,12 +368,12 @@ class PowerProfile : PowerMeterXMLData {
     
     // MARK: - NSXMLParser Delegate
     
-    class func parse(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+    class func parse(_ url: URL, completionHandler: @escaping PowerMeterXMLDataCompletionHandler) {
         PowerProfile(url: url, completionHandler: completionHandler).parse()
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
-        attributes attributeDict: [NSObject : AnyObject]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
+        attributes attributeDict: [AnyHashable: Any]) {
             switch elementName {
             case "header": inHeader = true
             default: break
@@ -380,30 +381,30 @@ class PowerProfile : PowerMeterXMLData {
             input = ""
     }
     
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         switch elementName {
         case "header": inHeader = false
         case "v" where !inHeader:
-            if let value = NSNumberFormatter().numberFromString(input)?.integerValue {
+            if let value = NumberFormatter().number(from: input)?.intValue {
                 v.append(value)
             }
         case "endts" where inHeader:
-            endts = PowerProfile.powerMeterDateFormatter.dateFromString(String(input.characters.dropLast()))
+            endts = PowerProfile.powerMeterDateFormatter.date(from: String(input.characters.dropLast()))
         default: break
         }
     }
     
     // MARK: - private data
     
-    private static let powerMeterDateFormatter: NSDateFormatter = {
-        var formatter = NSDateFormatter()
+    private static let powerMeterDateFormatter: DateFormatter = {
+        var formatter = DateFormatter()
         formatter.dateFormat = Constants.timestampFormatString
         return formatter
     }()
     
-    private class func timestampFromDate(date: NSDate?) -> String {
+    fileprivate class func timestampFromDate(_ date: Date?) -> String {
         if let date = date {
-            return powerMeterDateFormatter.stringFromDate(date)
+            return powerMeterDateFormatter.string(from: date)
         }
         return "0"
     }
@@ -411,26 +412,24 @@ class PowerProfile : PowerMeterXMLData {
 }
 
 // Base class for xml based powermeter data, both PowerProfile and PowerMeterDeviceInfo classes do inherit from this base class
-class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
+class PowerMeterXMLData : NSObject, XMLParserDelegate {
     
     typealias PowerMeterXMLDataCompletionHandler = (PowerMeterXMLData?) -> Void
     private let completionHandler: PowerMeterXMLDataCompletionHandler
 
-    init(url: NSURL, completionHandler: PowerMeterXMLDataCompletionHandler) {
+    init(url: URL, completionHandler: @escaping PowerMeterXMLDataCompletionHandler) {
         self.url = url
         self.completionHandler = completionHandler
     }
     
-    private let url: NSURL
-    private var lastError: ErrorType!
+    private let url: URL
+    private var lastError: Error!
     
-    private func parse() {
-        let qos = Int(QOS_CLASS_USER_INITIATED.rawValue)
-        dispatch_async(dispatch_get_global_queue(qos, 0)) {
-            do {
-                let data = try NSData(contentsOfURL: self.url, options: NSDataReadingOptions.UncachedRead)
+    fileprivate func parse() {
+        DispatchQueue.global(qos: .userInitiated).async {            do {
+                let data = try Data(contentsOf: self.url, options: NSData.ReadingOptions.uncachedRead)
                 self.lastError = nil
-                let parser = NSXMLParser(data: data)
+                let parser = XMLParser(data: data)
                 parser.delegate = self
                 parser.shouldProcessNamespaces = false
                 parser.shouldReportNamespacePrefixes = false
@@ -446,22 +445,22 @@ class PowerMeterXMLData : NSObject, NSXMLParserDelegate {
     }
 
     // helper vars for XML parsing
-    private var input = ""
-    private var inHeader = false
+    fileprivate var input = ""
+    fileprivate var inHeader = false
     
     private func fail() { complete(success: false) }
     private func succeed() { complete(success: true) }
 
-    private func complete(success success: Bool) {
-        dispatch_async(dispatch_get_main_queue()) {
+    private func complete(success: Bool) {
+        DispatchQueue.main.async {
             self.completionHandler(success ? self : nil)
         }
     }
     
     // MARK: - NSXMLParser Delegate
 
-    func parserDidEndDocument(parser: NSXMLParser) { succeed() }
-    func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) { fail() }
-    func parser(parser: NSXMLParser, validationErrorOccurred validationError: NSError) { fail() }
-    func parser(parser: NSXMLParser, foundCharacters string: String) { input += string }
+    func parserDidEndDocument(_ parser: XMLParser) { succeed() }
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) { fail() }
+    func parser(_ parser: XMLParser, validationErrorOccurred validationError: Error) { fail() }
+    func parser(_ parser: XMLParser, foundCharacters string: String) { input += string }
 }

@@ -16,22 +16,22 @@ class PowermeterHistoryTableViewController: UITableViewController {
         didSet { tableView.reloadData() }
     }
     
-    private let dateFormatter: NSDateFormatter = {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
+    private let dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.short
+        dateFormatter.timeStyle = DateFormatter.Style.medium
         return dateFormatter
     }()
     
-    private let decimalNumberFormatter: NSNumberFormatter = {
-        let formatter = NSNumberFormatter()
-        formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+    private let decimalNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = NumberFormatter.Style.decimal
         return formatter
     }()
     
     // MARK: - Table view data source
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return history?.count ?? 0
@@ -41,14 +41,14 @@ class PowermeterHistoryTableViewController: UITableViewController {
         static let CellReuseIdentifier = "HistoryCell"
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(Storyboard.CellReuseIdentifier, forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Storyboard.CellReuseIdentifier, for: indexPath) 
 
         // Configure the cell...
-        if let sample = history?.getSample(indexPath.row) {
-            cell.textLabel?.text = dateFormatter.stringFromDate(sample.timestamp)
+        if let sample = history?.getSample((indexPath as NSIndexPath).row) {
+            cell.textLabel?.text = dateFormatter.string(from: sample.timestamp)
             cell.detailTextLabel?.text = sample.value != nil
-                ? decimalNumberFormatter.stringFromNumber(NSNumber(integer: sample.value!))?.stringByAppendingString("W")
+                ? (decimalNumberFormatter.string(from: NSNumber(value: sample.value! as Int)))! + "W"
                 : "-"
         }
 

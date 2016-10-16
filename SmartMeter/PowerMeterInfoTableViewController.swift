@@ -17,7 +17,7 @@ class PowerMeterInfoTableViewController: UITableViewController {
     @IBOutlet weak var modelNumberLabel: UILabel!
     @IBOutlet weak var serialNumberLabel: UILabel!
 
-    @IBAction func refresh(sender: AnyObject) { updateDeviceInfo() }
+    @IBAction func refresh(_ sender: AnyObject) { updateDeviceInfo() }
     
     // MARK: - public API
     
@@ -36,7 +36,7 @@ class PowerMeterInfoTableViewController: UITableViewController {
         deviceInfo = nil // invalidate old staled data
         powerMeter?.readDeviceInfo {
             if let info = $0 {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshControl?.endRefreshing()
                     self.deviceInfo = info
                 }
