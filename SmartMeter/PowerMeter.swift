@@ -33,7 +33,7 @@ class PowerMeter: NSObject {
     
     // read power samples from the power meter and append them to the history data
     // the maximum batch size supported by the device is currently 100, which is also the default
-    func readSamples(_ num: Int, batchSize: Int = 100, completionHandler: @escaping (_ remaining: Int) -> Void) {
+    func readSamples(num: Int, batchSize: Int = 100, completionHandler: @escaping (_ remaining: Int) -> Void) {
         readSamples {
             let remaining = max(0, num - batchSize)
             if self.abortCurrentFetchRequest {
@@ -42,7 +42,7 @@ class PowerMeter: NSObject {
             } else {
                 completionHandler(remaining)
                 if remaining > 0 {
-                    self.readSamples(remaining, completionHandler: completionHandler)
+                    self.readSamples(num: remaining, completionHandler: completionHandler)
                 }
             }
         }
@@ -50,7 +50,7 @@ class PowerMeter: NSObject {
 
     // read the device info from the power meter asynchronously
     // will call the callback in the main queue
-    func readDeviceInfo(_ completionHandler: @escaping ([String: String]?) -> Void) {
+    func readDeviceInfo(completionHandler: @escaping ([String: String]?) -> Void) {
         var u = URLComponents()
         u.scheme = "http"
         u.host = host
@@ -68,7 +68,7 @@ class PowerMeter: NSObject {
     // MARK: - private
     
     // internal function to read one batch of data from the power meter
-    private func readSamples(_ count: Int = 100, completionHandler: @escaping () -> Void) {
+    private func readSamples(count: Int = 100, completionHandler: @escaping () -> Void) {
         // e.g. startts = 01.01.2015 10:22:33 we need to read data until
         //                01.01.2015 10:22:32
         let lastTimestamp = history.startts?.addingTimeInterval(-1)
@@ -245,7 +245,7 @@ class PowerMeter: NSObject {
             return data.count
         }
         
-        func getSample(_ index: Int) -> PowerSample? {
+        func getSample(forIndex index: Int) -> PowerSample? {
             if startts != nil && index < data.count {
                 return PowerSample(
                     timestamp: startts!.addingTimeInterval(Double(index) * sampleRate),
@@ -255,8 +255,8 @@ class PowerMeter: NSObject {
             return nil
         }
         
-        func getSample(_ index: Int, resample: Int) -> PowerSample? {
-            if let sample = getSample(index) {
+        func getSample(forIndex index: Int, resample: Int) -> PowerSample? {
+            if let sample = getSample(forIndex: index) {
                 var sum: Int = 0
                 var count = 0
                 for i: Int in 0..<resample {

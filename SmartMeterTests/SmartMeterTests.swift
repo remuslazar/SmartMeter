@@ -93,8 +93,8 @@ class SmartMeterTests: XCTestCase {
         // add data
         history.add(powerProfile)
         XCTAssertEqual(history.count, 2)
-        XCTAssertEqual(history.getSample(0)?.value, 100)
-        XCTAssertEqual(history.getSample(1)?.value, 200)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 100)
+        XCTAssertEqual(history.getSample(forIndex: 1)?.value, 200)
 
         XCTAssertEqual(history.startts, powerProfile.startts)
         XCTAssertEqual(history.endts, powerProfile.endts)
@@ -103,8 +103,8 @@ class SmartMeterTests: XCTestCase {
         let powerProfile2 = MockPowerProfile(startts: Date(timeIntervalSince1970: 1), data: [200,110,210])
         history.add(powerProfile2)
         XCTAssertEqual(history.count, 4)
-        XCTAssertEqual(history.getSample(0)?.value, 100)
-        XCTAssertEqual(history.getSample(3)?.value, 210)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 100)
+        XCTAssertEqual(history.getSample(forIndex: 3)?.value, 210)
         
         XCTAssertEqual(history.startts, powerProfile.startts)
         XCTAssertEqual(history.endts, powerProfile2.endts)
@@ -112,7 +112,7 @@ class SmartMeterTests: XCTestCase {
         // changing size of the history
         history.size = 3
         XCTAssertEqual(history.count, 3)
-        XCTAssertEqual(history.getSample(0)?.value, 200)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 200)
         
         // test the prepend method (this method inserts new data at the begining)
         history.purge()
@@ -122,18 +122,18 @@ class SmartMeterTests: XCTestCase {
         // prepend a new PowerProfile to the history without overlap
         history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 8), data: [1,2]))
         XCTAssertEqual(history.count, 4)
-        XCTAssertEqual(history.getSample(0)?.value, 1)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 1)
         
         // prepend a new PowerProfile to the history with overlap
         history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 7), data: [12,0]))
         XCTAssertEqual(history.count, 5)
-        XCTAssertEqual(history.getSample(0)?.value, 12)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 12)
 
         // prepend a new PowerProfile to the history with overlap and nil values
         history.prepend(MockPowerProfile(startts: Date(timeIntervalSince1970: 0), data: [0,1,2]))
         XCTAssertEqual(history.count, 12)
-        XCTAssertEqual(history.getSample(0)?.value, 0)
-        XCTAssertEqual(history.getSample(3)?.value, nil)
+        XCTAssertEqual(history.getSample(forIndex: 0)?.value, 0)
+        XCTAssertEqual(history.getSample(forIndex: 3)?.value, nil)
     }
     
     

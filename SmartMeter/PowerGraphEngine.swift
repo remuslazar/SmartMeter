@@ -48,8 +48,8 @@ class PowerGraphEngine: GraphViewDatasource {
     
     func graphViewgetSample(_ x: Int, resample: Int) -> PowerMeter.History.PowerSample? {
         let index = x + Int(round(offsetX))
-        if resample == 1 { return history.getSample(index) }
-        return history.getSample(index, resample: resample)
+        if resample == 1 { return history.getSample(forIndex: index) }
+        return history.getSample(forIndex: index, resample: resample)
     }
     
     func graphViewGetMaxY() -> Double {

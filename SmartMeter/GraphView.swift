@@ -87,7 +87,7 @@ class GraphView: UIView {
     
     private func calculateArea() {
         
-        func yValueForYCoodrdinate(_ y:CGFloat) -> Double {
+        func yValue(forYCoordinate y:CGFloat) -> Double {
             return Double(maxY * (bounds.height - y)/bounds.height)
         }
     
@@ -97,8 +97,8 @@ class GraphView: UIView {
             let x1 = Int(selection.maxX / xScaleFactor)
             var powerAvg = 0.0
             if x1 > x0 {
-                let minY = yValueForYCoodrdinate(selection.maxY)
-                let maxY = yValueForYCoodrdinate(selection.minY)
+                let minY = yValue(forYCoordinate: selection.maxY)
+                let maxY = yValue(forYCoordinate: selection.minY)
                 for x in x0..<x1 {
                     if let y = datasource.graphViewgetSample(x, resample: 1)?.value {
                         powerAvg += min(Double(y), maxY) - minY
@@ -149,7 +149,7 @@ class GraphView: UIView {
         
         if let minX = datasource?.graphViewgetSample(0, resample: 1)?.timestamp,
             let maxX = datasource?.graphViewgetSample(datasource.graphViewgetSampleCount()-1, resample: 1)?.timestamp {
-                axesDrawer.drawAxesInRect(bounds, minX: minX, maxX: maxX, minY: 0, maxY: maxY)
+                axesDrawer.drawAxes(inRect: bounds, minX: minX, maxX: maxX, minY: 0, maxY: maxY)
         }
         
         if let selection = selectedRect {

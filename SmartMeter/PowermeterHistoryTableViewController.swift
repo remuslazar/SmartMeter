@@ -45,7 +45,7 @@ class PowermeterHistoryTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: Storyboard.CellReuseIdentifier, for: indexPath) 
 
         // Configure the cell...
-        if let sample = history?.getSample((indexPath as NSIndexPath).row) {
+        if let sample = history?.getSample(forIndex: (indexPath as NSIndexPath).row) {
             cell.textLabel?.text = dateFormatter.string(from: sample.timestamp)
             cell.detailTextLabel?.text = sample.value != nil
                 ? (decimalNumberFormatter.string(from: NSNumber(value: sample.value! as Int)))! + "W"

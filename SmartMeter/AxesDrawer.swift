@@ -20,7 +20,7 @@ class AxesDrawer: UIView {
         static let LegendColor: UIColor = UIColor.lightGray
     }
 
-    private func drawText(_ text: String, toPoint point: CGPoint) {
+    private func draw(text: String, toPoint point: CGPoint) {
         let attributes = [
             NSFontAttributeName : UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote),
             NSForegroundColorAttributeName : Constants.LegendColor
@@ -30,7 +30,7 @@ class AxesDrawer: UIView {
         text.draw(in: textRect, withAttributes: attributes)
     }
     
-    private func drawY(_ bounds: CGRect, minY: CGFloat, maxY: CGFloat) {
+    private func drawY(bounds: CGRect, minY: CGFloat, maxY: CGFloat) {
         let maximumNumberOfLabels = bounds.height / Constants.LabelVerticalSpacing
         let minStepValue = maxY / maximumNumberOfLabels
         let stepValue = minStepValue.multipleOf(Constants.YStepValueShouldBeMultipleOf)
@@ -42,12 +42,12 @@ class AxesDrawer: UIView {
         for yValue in stride(from: stepValue, to: maxY, by: stepValue) {
             let y = bounds.height - (yValue / maxY * bounds.height)
             if let label = formatter.string(from: NSNumber(floatLiteral: Double(yValue))) {
-                drawText(label + "W", toPoint: CGPoint(x: Constants.YScaleMarginLeft, y: y))
+                draw(text: label + "W", toPoint: CGPoint(x: Constants.YScaleMarginLeft, y: y))
             }
         }
     }
     
-    private func drawX(_ bounds: CGRect, minX: Date, maxX: Date) {
+    private func drawX(bounds: CGRect, minX: Date, maxX: Date) {
         let timeInterval = maxX.timeIntervalSince(minX)
         let maximumNumberOfLabels = bounds.width / Constants.LabelHorizontalSpacing
         let minStepValue = CGFloat(timeInterval) / maximumNumberOfLabels
@@ -63,15 +63,15 @@ class AxesDrawer: UIView {
             let x = xValue / CGFloat(timeInterval) * bounds.width
             let location = CGPoint(x: x, y: bounds.height - Constants.XScaleMarginBottom)
             let date = minX.addingTimeInterval(TimeInterval(xValue))
-            drawText(formatter.string(from: date), toPoint: location)
+            draw(text: formatter.string(from: date), toPoint: location)
         }
     }
     
     
-    func drawAxesInRect(_ bounds: CGRect, minX: Date, maxX: Date, minY: CGFloat = 0, maxY: CGFloat) {
+    func drawAxes(inRect bounds: CGRect, minX: Date, maxX: Date, minY: CGFloat = 0, maxY: CGFloat) {
 
-        drawX(bounds, minX: minX, maxX: maxX)
-        drawY(bounds, minY: minY, maxY: maxY)
+        drawX(bounds: bounds, minX: minX, maxX: maxX)
+        drawY(bounds: bounds, minY: minY, maxY: maxY)
     }
     
 }

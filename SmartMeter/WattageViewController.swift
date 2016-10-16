@@ -145,7 +145,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
                     ),
                     timespan),
                     style: .default, handler: { (_) in
-                        self.loadHistory(TimeInterval(timespan * 60))
+                        self.loadHistory(timespan: TimeInterval(timespan * 60))
                 }))
             }
             sheet.addAction(UIAlertAction(title: NSLocalizedString("Reset local history",
@@ -169,11 +169,11 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     }
 
     // load historical data from the power meter
-    private func loadHistory(_ timespan: TimeInterval = 300) {
+    private func loadHistory(timespan: TimeInterval = 300) {
         state = .loadingHistory
         self.progressBar.progress = 0
         self.progressBar.isHidden = false
-        powerMeter?.readSamples(Int(timespan), completionHandler: { (remaining) -> Void in
+        powerMeter?.readSamples(num: Int(timespan), completionHandler: { (remaining) -> Void in
             self.progressBar.progress = Float(Int(timespan) - remaining) / Float(timespan)
             if (remaining <= 0) {
                 self.progressBar.isHidden = true
