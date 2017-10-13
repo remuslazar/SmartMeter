@@ -372,7 +372,7 @@ class PowerProfile : PowerMeterXMLData {
         PowerProfile(url: url, completionHandler: completionHandler).parse()
     }
     
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
+    @objc func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?,
         attributes attributeDict: [AnyHashable: Any]) {
             switch elementName {
             case "header": inHeader = true
