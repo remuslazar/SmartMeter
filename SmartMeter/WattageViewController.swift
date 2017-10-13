@@ -208,7 +208,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
     
     private var pricePerKWh = 0.0 // in the local currency
     
-    func readUserDefaults() {
+    @objc func readUserDefaults() {
         print("(re)reading user defaults and init")
         if let hostname = Foundation.UserDefaults().value(forKey: UserDefaults.SmartmeterHostname) as? String {
             smartMeterHostname = hostname
@@ -223,7 +223,7 @@ class WattageViewController: UIViewController, PowerMeterDelegate, GraphViewDele
         }
     }
     
-    func didEnterBackground() {
+    @objc func didEnterBackground() {
         print("autoUpdate disabled while running in background")
         state = .paused
     }

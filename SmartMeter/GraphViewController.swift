@@ -47,7 +47,7 @@ class GraphViewController: UIViewController {
 
     // MARK: - Gesture Recognizer methods
     
-    func doubleTap(_ gesture: UITapGestureRecognizer) {
+    @objc func doubleTap(_ gesture: UITapGestureRecognizer) {
         switch gesture.state {
         case .ended:
             powerGraphEngine?.scaleX = 1.0
@@ -57,7 +57,7 @@ class GraphViewController: UIViewController {
     }
     
     
-    func pan(_ gesture: UIPanGestureRecognizer) {
+    @objc func pan(_ gesture: UIPanGestureRecognizer) {
         
         struct State {
             static var firstEdge = CGPoint.zero
@@ -77,7 +77,7 @@ class GraphViewController: UIViewController {
     
     }
 
-    func zoom(_ gesture: UIPinchGestureRecognizer) {
+    @objc func zoom(_ gesture: UIPinchGestureRecognizer) {
         
         func constrain(_ input: CGFloat) -> CGFloat {
             return input < 0.2 ? 0 : input > 0.8 ? 1 : input

@@ -180,7 +180,7 @@ class PowerMeter: NSObject {
     // time skew of the power meter device (negative means that the device RTC is late)
     private var timeSkew: TimeInterval?
 
-    func update() {
+    @objc func update() {
         if delegate == nil || lastRequestStillPending { return }
         lastRequestStillPending = true
         readCurrentWattage {

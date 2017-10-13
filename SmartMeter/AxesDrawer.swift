@@ -22,11 +22,11 @@ class AxesDrawer: UIView {
 
     private func draw(text: String, toPoint point: CGPoint) {
         let attributes = [
-            NSFontAttributeName : UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote),
-            NSForegroundColorAttributeName : Constants.LegendColor
+            NSAttributedStringKey.font : UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote),
+            NSAttributedStringKey.foregroundColor : Constants.LegendColor
         ]
 
-        let textRect = CGRect(origin: point, size: text.size(attributes: attributes))
+        let textRect = CGRect(origin: point, size: text.size(withAttributes: attributes))
         text.draw(in: textRect, withAttributes: attributes)
     }
     
